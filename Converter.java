@@ -14,35 +14,35 @@ public class Converter {
 	}
     
 //return Binary to Hexcode!
-	public String binToHex(String input) {
+	public static String binToHex(String input) {
       int decimal = Integer.parseInt(input,2);	
 		return Integer.toString(decimal,16);	
 	}
 
 //return Binary to Decimal!	
-	public int binToDec (String input) {
+	public static int binToDec (String input) {
 	  int decimal = Integer.parseInt(input,2);	
 		return decimal;		
 	}
 	
 //return Decimal to Binary!
-	public int decToBin(int input) {
+	public static int decToBin(int input) {
 	  String Binary = Integer.toBinaryString(input);	
 		return Integer.valueOf(Binary);		
 	}
 
 //return Hexcode to Binary!
-	public int hexToBin(String input) {
-		return Integer.valueOf(new BigInteger(input, 16).toString(2));		
+	public static String hexToBin(String input) {
+		return new BigInteger(input, 16).toString(2);		
 	}
 
 //return Hexcode to Decimal!
-	public int hexToDec(String input) {
+	public static int hexToDec(String input) {
 	   int decimal= Integer.parseInt(input,16); 
 		return decimal;		
 	}
 //return Decimal to Hexcode!	
-	public String decToHex(int input) {
+	public static String decToHex(int input) {
 	  String Hexcode = Integer.toHexString(input);
 		return Hexcode;		
 	}
