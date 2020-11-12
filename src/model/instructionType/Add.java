@@ -24,6 +24,11 @@ public class Add implements Instruction {
 
 	@Override
 	public void execute(Controller theCon) {
+		int result = theCon.getAR() + Integer.parseInt(Converter.binToHex(myOperand), 16);
+
+		theCon.setRegister(result);
+		theCon.setPc(theCon.getPc()+1);
+
 
 	}
 
