@@ -1,6 +1,7 @@
 package controller;
 import model.Converter;
 import model.Decode;
+import model.MemoryUnit;
 import model.instructionType.Instruction;
 
 public class Controller {

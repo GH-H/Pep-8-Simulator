@@ -19,8 +19,8 @@ public final class Decode {
 	public Instruction decodeInstruction(final String hex) throws IllegalArgumentException {
 		Instruction instruction;
 		String[] node;
-		String theString = Converter.hexToBinary(hex).replace(" " , "");
-		System.out.println(Converter.hexToBinary(hex));
+		String theString = Converter.hexToBin(hex).replace(" " , "");
+		System.out.println(Converter.hexToBin(hex));
 		node = new String[3];
 		node[0] = theString.substring(0, 5);// assign opcode to node 0
 		node[1] = theString.substring(6, 8);// assign register to node 1
