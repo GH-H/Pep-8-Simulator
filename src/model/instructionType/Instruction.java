@@ -23,7 +23,7 @@ public abstract class Instruction {
 		this.myOperandSpecifier = myOperandSpecifier;
 	}
 
-	abstract void execute(Controller theCon);
+	public abstract void execute(Controller theCon);
 
 	public String getMyInstructionSpecifier() {
 		return myInstructionSpecifier;
