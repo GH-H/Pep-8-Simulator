@@ -29,30 +29,30 @@ public final class Decode {
 		switch (node[0]) {
 		case "01110":// instruction: add
 			node[2] = theString.substring(8, 24);// assign operand specifier to node 2
-			instruction = new Add(node[0], node[1], node[2]);
+			instruction = new Add(node[0]+ node[1],node[2]);
 			break;
 		case "11000":// instruction: load
 			node[2] = theString.substring(8, 24);// assign operand specifier to node 2
-			instruction = new LW(node[0], node[1], node[2]);
+			instruction = new LW(node[0]+node[1], node[2]);
 			break;
 		case "11100":// instruction: store
 			node[2] = theString.substring(8, 24);// assign operand specifier to node 2
-			instruction = new SW(node[0], node[1], node[2]);
+			instruction = new SW(node[0]+ node[1], node[2]);
 			break;
 		case "10000":// instruction: subtract
 			node[2] = theString.substring(8, 24);// assign operand specifier to node 2
-			instruction = new Sub(node[0], node[1], node[2]);
+			instruction = new Sub(node[0]+node[1], node[2]);
 			break;
 		case "01001":// instruction: character input
 			node[2] = theString.substring(8, 24);// assign operand specifier to node 2
-			instruction = new CharIn(node[0], node[1], node[2]);
+			instruction = new CharIn(node[0]+node[1], node[2]);
 			break;
 		case "01010":// instruction: character output
 			node[2] = theString.substring(8, 24);// assign operand specifier to node 2
-			instruction = new CharOut(node[0], node[1], node[2]);
+			instruction = new CharOut(node[0]+ node[1], node[2]);
 			break;
 		case "00000"://	instruction: stop
-			instruction = new Stop(node[0], node[1]);
+			instruction = new Stop(node[0]+ node[1],null);
 			break;
 		
 		default:

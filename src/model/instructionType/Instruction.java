@@ -7,33 +7,29 @@ import controller.Controller;
  *
  */
 
-public interface Instruction {
-	/**
-	 * Get the opcode.
-	 *
-	 * @return the opcode.
-	 */
-	String getOpcode();
+public abstract class Instruction {
 
 	/**
-	 * Get the operand.
-	 *
-	 * @return the operand.
+	 * InstructionSpecifier values
 	 */
-	String getOperand();
+	private String myInstructionSpecifier;
 
-	/**
-	 * Get the register.
-	 *
-	 * @return the register.
-	 */
-	String getRegister();
+	/** The operandSpecifier value. */
+	private String myOperandSpecifier;
 
-	/**
-	 * Get the opcode.
-	 *
-	 * @return the opcode.
-	 */
 
-	void execute(Controller theCon);
+	public Instruction(String myInstructionSpecifier, String myOperandSpecifier) {
+		this.myInstructionSpecifier = myInstructionSpecifier;
+		this.myOperandSpecifier = myOperandSpecifier;
+	}
+
+	abstract void execute(Controller theCon);
+
+	public String getMyInstructionSpecifier() {
+		return myInstructionSpecifier;
+	}
+
+	public String getMyOperandSpecifier() {
+		return myOperandSpecifier;
+	}
 }

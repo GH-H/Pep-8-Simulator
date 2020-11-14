@@ -2,39 +2,15 @@ package model.instructionType;
 
 import controller.Controller;
 
-/**
- * This class is the stop instruction
- */
-public class Stop implements Instruction {
-	/** The destination register number. */
-	private String myRd;
 
-	/** The opcode of the instruction. */
-	private String myOpcode;
+public class Stop extends Instruction {
 
-	public Stop(String myOpcode, String myRd) {
-		this.myRd = myRd;
-		this.myOpcode = myOpcode;
+	public Stop(String myInstructionSpecifier, String myOperandSpecifier) {
+		super(myInstructionSpecifier, myOperandSpecifier);
 	}
 
 	@Override
-	public void execute(Controller theCon) {
+	void execute(Controller theCon) {
 
 	}
-
-	@Override
-	public String getOpcode() {
-		return myOpcode;
-	}
-
-	@Override
-	public String getRegister() {
-		return myRd;
-	}
-
-	@Override
-	public String getOperand() {
-		return null;
-	}
-
 }
