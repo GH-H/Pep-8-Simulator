@@ -12,7 +12,7 @@ public class Sub extends Instruction {
 	}
 
 	@Override
-	void execute(Controller theCon) {
+	public void execute(Controller theCon) {
 
 	}
 }
