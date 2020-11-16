@@ -41,10 +41,9 @@ public class Controller {
 
     /**
      * The index register value.
-     * I think that since the accumulator is the only register that we're using, this value stays at 0x0000 for the
-     * whole program (thus it is set to final to prevent accidental reassignment).
+     * (binary format, 16 bits)
      */
-    private final String myIndexRegister;
+    private String myIndexRegister;
 
     /**
      * The current memory address location of the top of the stack.
@@ -263,6 +262,10 @@ public class Controller {
 
     public void setMyAccumulatorRegister(String theAccumulatorRegister) {
         this.myAccumulatorRegister = theAccumulatorRegister;
+    }
+
+    public void setMyIndexRegister(String theIndexRegister) {
+        this.myIndexRegister =  theIndexRegister;
     }
 
     public void setMyStackPointer(int theStackPointer) {
