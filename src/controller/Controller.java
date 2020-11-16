@@ -199,8 +199,30 @@ public class Controller {
     /////////////////////////////set & get methods below//////////////////////////
 
     // get methods:
+
+    /*  Do not use this getter method. It passes the whole object which is bad news.
     public MemoryUnit getMyMemory() {
         return myMemory;
+    }
+    */
+
+    // Use these memory getters instead:
+    /**
+     * Gets the 8-bit, binary-format String data that's stored at a specified location in MyMemory.
+     *
+     * @param myMemoryIndex The MyMemory address location of the 8-bit, binary-format String data to be retrieved.
+     * @return The 8-bit, binary-format String data that was stored at a MyMemory address location.
+     */
+    public String getMyMemoryDataAt(int myMemoryIndex) {
+        return myMemory.getDataAt(myMemoryIndex);
+    }
+
+    /**
+     * Returns the entire contents of the Memory in String[] form.
+     * @return the entire contents of the Memory in String[] form.
+     */
+    public String[] getMyMemoryFullDump() {
+        return myMemory.getMemory();
     }
 
     public String getMyAccumulatorRegister() {
@@ -256,8 +278,23 @@ public class Controller {
     }
 
     // set methods:
+
+    /* Don't use this setter, we don't want to replace the Memory object with a whole new object.
     public void setMyMemory(MemoryUnit theMemory) {
         this.myMemory = theMemory;
+    }
+    */
+
+    // Use this to write to memory instead:
+    /**
+     * Store a new 8-bit, binary format String value at an address location in MyMemory.
+     *
+     * @param theIndex The address location of where the new data should be stored.
+     * @param theData The 8-bit, binary format String value that should be stored at the
+     *                specified address location.
+     */
+    public void storeInMyMemory(int theIndex, String theData) {
+        myMemory.storeAt(theIndex, theData);
     }
 
     public void setMyAccumulatorRegister(String theAccumulatorRegister) {
