@@ -23,7 +23,7 @@ public final class Decode {
 		System.out.println(Converter.hexToBin(hex));
 		node = new String[3];
 		node[0] = theString.substring(0, 5);// assign opcode to node 0
-		node[1] = theString.substring(6, 8);// assign register to node 1
+		node[1] = theString.substring(5, 8);// assign register to node 1
 		
 		// Decode and create appropriate instruction
 		switch (node[0]) {

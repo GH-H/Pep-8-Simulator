@@ -8,7 +8,7 @@ package model;
 public class MemoryUnit {
 
     //array of database
-    private String memory[] = new String[6500];
+    private String memory[] = new String[65536];
 
     public MemoryUnit() {
     }
