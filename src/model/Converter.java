@@ -21,15 +21,15 @@ public class Converter {
     }
 
     //return Binary to Decimal!
-    public static int binToDec(String input) {
+    public static int binToDec (String input) {
         int decimal = Integer.parseInt(input,2);
         return decimal;
     }
 
     //return Decimal to Binary!
-    public static int decToBin(int input) {
+    public static String decToBin(int input) {
         String Binary = Integer.toBinaryString(input);
-        return Integer.valueOf(Binary);
+        return Binary;
     }
 
     //return Hexcode to Binary!
