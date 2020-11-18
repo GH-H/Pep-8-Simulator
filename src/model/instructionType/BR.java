@@ -1,0 +1,30 @@
+package model.instructionType;
+
+import controller.Controller;
+import model.Converter;
+
+/**
+ * Branch class for BR instruction
+ */
+public class BR extends Instruction{
+
+    public BR(String myInstructionSpecifier, String myOperandSpecifier) {
+        super(myInstructionSpecifier, myOperandSpecifier);
+    }
+
+    /**
+     * Modify PC to the jump address specified in immediate mode or index mode
+     * @param theCon
+     */
+    @Override
+    public void execute(Controller theCon) {
+        if(getMyInstructionSpecifier().charAt(7) == '0') {
+            int jumpAddress = Converter.binToDec(this.getMyOperandSpecifier());
+            theCon.setMyProgramCounter(jumpAddress);
+        } else {
+            int operand = Converter.binToDec(getMyOperandSpecifier());
+            int dataInIndexRegister = Converter.binToDec(theCon.getMyIndexRegister());
+            theCon.setMyProgramCounter(operand + dataInIndexRegister);
+        }
+    }
+}
