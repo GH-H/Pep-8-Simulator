@@ -1,5 +1,8 @@
 package view;
 
+import controller.Controller;
+import model.Converter;
+
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
@@ -35,7 +38,7 @@ public class Pep8GUIFrame extends JFrame implements ActionListener {
     /**
      * The minimum columns for the smallest View.JLabeledTextArea's JTextArea size.
      */
-    private static final int MIN_JTEXTAREA_COLUMNS = 30;
+    private static final int MIN_JTEXTAREA_COLUMNS = 35;
 
     /**
      * The minimum columns for the initial JTextField size for the CPU bit information.
@@ -173,6 +176,10 @@ public class Pep8GUIFrame extends JFrame implements ActionListener {
      */
     private final JTextField myOperandStateRightField;
 
+    /**
+     * The controller that runs the backend calculations of the Pep/8 program.
+     */
+    private final Controller myController;
 
     /**
      * Constructs the Pep8 GUI, using the files in the current working directory (like View.JLabeledTextArea.java).
@@ -202,6 +209,7 @@ public class Pep8GUIFrame extends JFrame implements ActionListener {
         myZFlagTextField = makeUnfocusableTextField(NZVC_JTEXTFIELD_COLUMNS);
         myVFlagTextField = makeUnfocusableTextField(NZVC_JTEXTFIELD_COLUMNS);
         myCFlagTextField = makeUnfocusableTextField(NZVC_JTEXTFIELD_COLUMNS);
+        myController = new Controller();
 
         // Build GUI Visuals
         setTitle("Pep/8");
@@ -293,6 +301,8 @@ public class Pep8GUIFrame extends JFrame implements ActionListener {
      */
     private JTextField makeUnfocusableTextField(int theColumns) {
         JTextField textField = new JTextField(theColumns);
+        textField.setFont(new Font("monospaced", Font.PLAIN, 12));
+        textField.setHorizontalAlignment(JTextField.CENTER); //TODO: Fix this not centering text as expected.
         textField.setFocusable(false);
         return textField;
     }
@@ -309,23 +319,69 @@ public class Pep8GUIFrame extends JFrame implements ActionListener {
         return textField;
     }
 
-    //TODO: Remove once implementing proper button actions.
-    private void printObjectCodeRunSampleSteps() {
-        StringBuilder output = new StringBuilder();
-        output.append("-) Pass the following Object Code to the Controller through Controller.loadObjectCodeIntoMemory(theObjectCode): ");
-        output.append(myObjectCodeTextArea.getText());
-        output.append("\n");
-        output.append("-) Pass the following Input to the Controller through Controller.setInput(theInput): ");
-        output.append(myInputTextArea.getText());
-        output.append("\n");
-        output.append("-) Call Controller.run() to update the states stored in the Controller to the results of the finished program run.\n");
-        output.append("-) Write the output of Controller.getCPUStates() to the GUI's CPU state text fields.\n");
-        output.append("-) Write the output of Controller.getOutput() to the GUI's myOutputTextArea.\n");
-        output.append("-) Write the output of Controller.getMemory() to the GUI's myMemoryTextArea, using updateMemory(Controller.getMemory()) to format the output properly for the user.\n");
-        System.out.println(output.toString());
+    private void updateCPUFieldsView() {
+        // Generate left states (mostly hexadecimal)
+        String hexAccumulator = Converter.binToHexSetLength(myController.getMyAccumulatorRegister(),4).toUpperCase();
+        String hexIndexRegister = Converter.binToHexSetLength(myController.getMyIndexRegister(),4).toUpperCase();
+        String hexStackPointer = Converter.decToHexSetLength(myController.getMyStackPointer(),4).toUpperCase();
+        String hexProgramCounter = Converter.decToHexSetLength(myController.getMyProgramCounter(),4).toUpperCase();
+        String binInstructionSpecifier = myController.getMyInstructionRegister().substring(0,8);
+        String hexOperandSpecifier = Converter.binToHexSetLength(myController.getMyInstructionRegister().substring(8),4).toUpperCase();
+        String hexOperand = Converter.binToHexSetLength(myController.getMyOperand(),4).toUpperCase();
+
+        // Generate right states (mostly decimal)
+        int decAccumulator = Converter.binToDec(myController.getMyAccumulatorRegister());
+        int decIndexRegister = Converter.binToDec(myController.getMyIndexRegister());
+        int decStackPointer = myController.getMyStackPointer();
+        int decProgramCounter = myController.getMyProgramCounter();
+        // TODO: FIND KEYWORD FOR INSTRUCTION SPECIFIER
+        int decOperandSpecifier = Converter.binToDec(myController.getMyInstructionRegister().substring(8));
+        int decOperand = Converter.binToDec(myController.getMyOperand());
+
+        // Populate left JTextFields
+        myAccumulatorStateLeftField.setText("0x" + hexAccumulator);
+        myIndexRegisterStateLeftField.setText("0x" + hexIndexRegister);
+        myStackPointerStateLeftField.setText("0x" + hexStackPointer);
+        myProgramCounterStateLeftField.setText("0x" + hexProgramCounter);
+        myInstructionSpecifierStateLeftField.setText(binInstructionSpecifier);
+        myOperandSpecifierStateLeftField.setText("0x" + hexOperandSpecifier);
+        myOperandStateLeftField.setText("0x" + hexOperand);
+
+        // Populate right JTextFields
+        myAccumulatorStateRightField.setText(Integer.toString(decAccumulator));
+        myIndexRegisterStateRightField.setText(Integer.toString(decIndexRegister));
+        myStackPointerStateRightField.setText(Integer.toString(decStackPointer));
+        myProgramCounterStateRightField.setText(Integer.toString(decProgramCounter));
+        // TODO: PRINT KEYWORD FOR INSTRUCTION SPECIFIER
+        myOperandSpecifierStateRightField.setText(Integer.toString(decOperandSpecifier));
+        myOperandStateRightField.setText(Integer.toString(decOperand));
+
+        // Populate NZVC Flag JTextFields
+        myNFlagTextField.setText(Integer.toString(myController.getMyNFlag()));
+        myZFlagTextField.setText(Integer.toString(myController.getMyZFlag()));
+        myVFlagTextField.setText(Integer.toString(myController.getMyVFlag()));
+        myCFlagTextField.setText(Integer.toString(myController.getMyCFlag()));
     }
 
-    //TODO: Implement proper button actions instead of printing a bullet-point list to the terminal.
+    private void updateMemoryDumpView() {
+        myMemoryTextArea.setText("");
+        String[] fullMemoryDump = myController.getMyMemoryFullDump();
+        for (int fakePC = 0; fakePC < myController.getMyMemoryTotalLocations(); fakePC += 8) { // Loop for each newline of the Memdump
+            // For each row:
+            myMemoryTextArea.appendText(Converter.decToHexSetLength(fakePC, 4).toUpperCase() + " | ");
+            for (int row = 0; row < 8; row++) {
+                String rawBinary = myController.getMyMemoryDataAt(fakePC + row);
+                if (rawBinary == null) {
+                    myMemoryTextArea.appendText("00 ");
+                } else {
+                    myMemoryTextArea.appendText(Converter.binToHexSetLength(rawBinary, 2).toUpperCase() + " ");
+                }
+            }
+            myMemoryTextArea.appendText("\n");
+        }
+    }
+
+    //TODO: Finalize proper button actions.
     /**
      * A notification method called in response to action events in this window.
      *
@@ -336,23 +392,23 @@ public class Pep8GUIFrame extends JFrame implements ActionListener {
         final String command = theEvent.getActionCommand().intern();
         switch (command) {
             case RUN_SOURCE_COMMAND:
-                System.out.println("\"Run Source\" Button Pressed");
-                System.out.println("*OUTDATED*");
-                System.out.println("-) Call assembleSourceCodeToObjectCode() to translate the Source Code to Object Code, then write the object code to myObjectTextArea.");
-                printObjectCodeRunSampleSteps();
-                break;
+                System.out.println("\"Run Source\" Steps Running");
+                //TODO: Call assembleSourceCodeToObjectCode() to translate the Source Code to Object Code,
+                // then write the object code to myObjectTextArea
+                //Let action follow the RUN_OBJECT_COMMAND step after. No "break;" needed here
             case RUN_OBJECT_COMMAND:
-                System.out.println("\"Run Object\" Button Pressed");
-                System.out.println("*OUTDATED*");
-                printObjectCodeRunSampleSteps();
+                System.out.println("\"Run Object\" Steps Running");
+                myController.loadObjectCodeIntoMemory(myObjectCodeTextArea.getText());
+                //TODO: add myController.run();
+                updateMemoryDumpView();
+                updateCPUFieldsView();
                 break;
-
             case CLEAR_MEMORY_COMMAND:
-                System.out.println("\"Clear Memory\" Button Pressed");
-                System.out.println("-) Call Controller.clearMemory() to clear the memory.");
-                System.out.println("-) Write Controller.getMemory() to myMemoryTextArea.\n");
+                System.out.println("\"Clear Memory\" Steps Running");
+                myController.clearMyMemoryAndResetCPUFields();
+                updateMemoryDumpView();
+                updateCPUFieldsView();
                 break;
-
             default:
                 throw new IllegalArgumentException("Unknown action.");
         }

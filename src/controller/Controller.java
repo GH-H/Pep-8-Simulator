@@ -1,5 +1,6 @@
 package controller;
 
+import model.Converter;
 import model.Decode;
 import model.MemoryUnit;
 import model.instructionType.Instruction;
@@ -16,9 +17,19 @@ public class Controller {
     private static final int MY_PROGRAM_COUNTER_START = 0;
 
     /**
-     * The default starting value for the Index Register.
+     * A starting value for registers and CPU states that require 16-bit placeholders
      */
-    private static final String MY_INDEX_REGISTER_START = "0000000000000000";
+    private static final String ZEROED_24_BITS = "000000000000000000000000";
+
+    /**
+     * A starting value for registers and CPU states that require 16-bit placeholders
+     */
+    private static final String ZEROED_16_BITS = "0000000000000000";
+
+    /**
+     * A starting value for registers and CPU states that require 16-bit placeholders
+     */
+    private static final String ZEROED_8_BITS = "00000000";
 
     /**
      *  The object used to read a 24-bit binary instruction to create the correct correlating Instruction-inherited object.
@@ -120,12 +131,12 @@ public class Controller {
     public Controller(){
         myDecode = new Decode();
         myMemory = new MemoryUnit();
-        myAccumulatorRegister = "";
-        myIndexRegister = MY_INDEX_REGISTER_START;
+        myAccumulatorRegister = ZEROED_16_BITS;
+        myIndexRegister = ZEROED_16_BITS;
         myStackPointer = MY_STACK_POINTER_START;
         myProgramCounter = MY_PROGRAM_COUNTER_START;
-        myInstructionRegister = "";
-        myOperand = "";
+        myInstructionRegister = ZEROED_24_BITS;
+        myOperand = ZEROED_16_BITS;
         myNFlag = 0;
         myZFlag = 0;
         myVFlag = 0;
@@ -135,26 +146,52 @@ public class Controller {
         myRunIsExecuting = false;
     }
 
-    public void loadObjectCodeIntoMemory(String obj){
-
-    }
-
     /**
-     *  Resets the registers, pointers, flags, and input and output values to default values for a new program run.
+     * This method takes in a raw string from the GUI that contains what the user inputted for the object code, then translates
+     * the object code into binary to store into the respective MyMemory locations.
+     *
+     * @param theObjectCode The raw string from the GUI that contains what the user inputted for the object code. May contain
+     *                      format specifiers like "\n" and "\t".
      */
-    private void resetFieldsForStart() {
-        myAccumulatorRegister = "";
-        myStackPointer = MY_STACK_POINTER_START;
-        myProgramCounter = MY_PROGRAM_COUNTER_START;
-        myInstructionRegister = "";
-        myOperand = "";
-        myNFlag = 0;
-        myZFlag = 0;
-        myVFlag = 0;
-        myCFlag = 0;
-        myInput = "";
-        myOutput = "";
-        myRunIsExecuting = true;
+    public void loadObjectCodeIntoMemory(final String theObjectCode) {
+        // Remove newline and tab formatters, as well as space characters.
+        String objCode = theObjectCode.replaceAll("\n","");
+        objCode = objCode.replaceAll("\t","");
+        objCode = objCode.replaceAll(" ","");
+        objCode = objCode.toLowerCase();
+        // objCode now has no formatters and is all lowercase.
+
+        try {
+            if (objCode.indexOf("zz") == -1) { // No zz cancel code present? Throw error.
+                throw new IllegalArgumentException("Object code does not have a \"zz\" cancel condition. " +
+                        "Object code failed to load to Memory.");
+            }
+            int index = 0;
+            boolean zzNotReadYet = true;
+            while (zzNotReadYet) {
+                if (charIsLowercaseHexValue(objCode.charAt(index))
+                        && charIsLowercaseHexValue(objCode.charAt(index + 1))) { // If two adjacent chars are valid hex values.
+                    String twoHexChars = objCode.substring(index, index+2);
+                    String binary = Converter.hexToBin(twoHexChars);
+                    if (binary.length() < 8) {  // Make sure binary string is 8 length before writing to memory.
+                        int binaryStartLength = binary.length();
+                        for (int i = 0; i < 8 - binaryStartLength; i++) {
+                            binary = "0" + binary;
+                        }
+                    }
+                    storeInMyMemory(index/2, binary);
+                    index += 2;
+                } else if (objCode.charAt(index) == 'z' && objCode.charAt(index) == 'z') { // If two adjacent chars are the exit condition.
+                    zzNotReadYet = false;
+                } else { // If the object code is a non-valid format.
+                    myMemory.clearMyMemory();
+                    throw new IllegalArgumentException("Object code is not written in a valid hexadecimal format. " +
+                            "Object code failed to load to Memory.");
+                }
+            }
+        } catch (Exception e) {
+            System.out.println(e);
+        }
     }
 
     /**
@@ -164,7 +201,6 @@ public class Controller {
         // Reset starting values.
         resetFieldsForStart();
 
-        // TODO: LOAD MEMORY
         execution:
         while (myRunIsExecuting) {
             try {
@@ -192,21 +228,63 @@ public class Controller {
         }
     }
 
-    public void clearMemory(){
+    /**
+     * A boolean checker that returns true if a char is a valid hexadecimal value. That means
+     * the character ranges from 1-9, A-F, or a-f. Otherwise, returns false.
+     *
+     * @param theChar The character to be checked if it ranges from 1-9, A-F, or a-f.
+     * @return True if the character ranges from 1-9, A-F, or a-f, false otherwise.
+     */
+    private boolean charIsLowercaseHexValue(char theChar) {
+        boolean isHexValue = true;
+        if (theChar < '0'
+                || (theChar > '9' && theChar < 'A')
+                || (theChar > 'F' && theChar < 'a')
+                || (theChar > 'f')) {
+            isHexValue = false;
+        }
+        return isHexValue;
+    }
 
+    /**
+     *  Resets the registers, pointers, flags, and input and output values to default values for a new program run.
+     */
+    private void resetFieldsForStart() {
+        myAccumulatorRegister = ZEROED_16_BITS;
+        myIndexRegister = ZEROED_16_BITS;
+        myStackPointer = MY_STACK_POINTER_START;
+        myProgramCounter = MY_PROGRAM_COUNTER_START;
+        myInstructionRegister = ZEROED_24_BITS;
+        myOperand = ZEROED_8_BITS;
+        myNFlag = 0;
+        myZFlag = 0;
+        myVFlag = 0;
+        myCFlag = 0;
+        myInput = "";
+        myOutput = "";
+        myRunIsExecuting = true;
+    }
+
+    /**
+     * Boolean checker for if any-length binary String is made up of only 0 and 1 chars.
+     * Returns true if all characters in theBinaryInput are 0 or 1, returns false otherwise.
+     *
+     * @param theBinaryInput The binary string to check if all chars are either 0 or 1.
+     * @return True if all characters in theBinaryInput are 0 or 1, returns false otherwise.
+     */
+    private boolean isBinaryString(String theBinaryInput) {
+        boolean output = true;
+        for (int i = 0; i < theBinaryInput.length(); i++) {
+            if (theBinaryInput.charAt(i) != '0' && theBinaryInput.charAt(i) != '1') {
+                output = false;
+            }
+        }
+        return output;
     }
 
     /////////////////////////////set & get methods below//////////////////////////
 
     // get methods:
-
-    /*  Do not use this getter method. It passes the whole object which is bad news.
-    public MemoryUnit getMyMemory() {
-        return myMemory;
-    }
-    */
-
-    // Use these memory getters instead:
     /**
      * Gets the 8-bit, binary-format String data that's stored at a specified location in MyMemory.
      *
@@ -214,78 +292,157 @@ public class Controller {
      * @return The 8-bit, binary-format String data that was stored at a MyMemory address location.
      */
     public String getMyMemoryDataAt(int myMemoryIndex) {
-        return myMemory.getDataAt(myMemoryIndex);
+        String output = "";
+        try {
+            if (myMemoryIndex >= myMemory.getTotalMemoryLocations() || myMemoryIndex < 0) {
+                throw new IllegalArgumentException("Memory location out of bounds: " +
+                        "Tried to access memory location " + myMemoryIndex + " while indexes only range from " +
+                        "0-" + (myMemory.getTotalMemoryLocations()-1) + ".");
+            }
+            output = myMemory.getDataAt(myMemoryIndex);
+        } catch (Exception e) {
+            System.out.println(e);
+        }
+        return output;
     }
 
     /**
      * Returns the entire contents of the Memory in String[] form.
+     *
      * @return the entire contents of the Memory in String[] form.
      */
     public String[] getMyMemoryFullDump() {
-        return myMemory.getMemory();
+        return myMemory.getMyMemory();
     }
 
+    /**
+     * Returns the total number of memory locations in MyMemory.
+     *
+     * @return The total number of memory locations in MyMemory.
+     */
+    public int getMyMemoryTotalLocations() { return myMemory.getTotalMemoryLocations(); }
+
+    /**
+     * Returns the 16-bit value stored in myAccumulatorRegister.
+     *
+     * @return the 16-bit value stored in myAccumulatorRegister.
+     */
     public String getMyAccumulatorRegister() {
         return myAccumulatorRegister;
     }
 
+    /**
+     * Returns the 16-bit value stored in myIndexRegister.
+     *
+     * @return The 16-bit value stored in myIndexRegister.
+     */
     public String getMyIndexRegister() {
         return myIndexRegister;
     }
 
+    /**
+     * Returns the current location of the Stack Pointer.
+     *
+     * @return The current location of the Stack Pointer.
+     */
     public int getMyStackPointer() {
         return myStackPointer;
     }
 
+    /**
+     * Returns the current location of the Program Counter.
+     *
+     * @return The current location of the Program Counter.
+     */
     public int getMyProgramCounter() {
         return myProgramCounter;
     }
 
+    /**
+     * Returns the 24-bit binary value of the currently running instruction.
+     *
+     * @return The 24-bit binary value of the currently running instruction.
+     */
     public String getMyInstructionRegister() {
         return myInstructionRegister;
     }
 
+    /**
+     * Returns whether the N flag is currently set to 0 or 1.
+     *
+     * @return Whether the N flag is currently set to 0 or 1.
+     */
     public int getMyNFlag() {
         return myNFlag;
     }
 
+    /**
+     * Returns whether the Z flag is currently set to 0 or 1.
+     *
+     * @return Whether the z flag is currently set to 0 or 1.
+     */
     public int getMyZFlag() {
         return myZFlag;
     }
 
+    /**
+     * Returns whether the V flag is currently set to 0 or 1.
+     *
+     * @return Whether the V flag is currently set to 0 or 1.
+     */
     public int getMyVFlag() {
         return myVFlag;
     }
 
+    /**
+     * Returns whether the C flag is currently set to 0 or 1.
+     *
+     * @return Whether the C flag is currently set to 0 or 1.
+     */
     public int getMyCFlag() {
         return myCFlag;
     }
 
+    /**
+     * Returns a string representation of the user's input characters.
+     * Format specifiers such as "/n" and "/t" may be present.
+     *
+     * @return A string representation of the user's input characters.
+     */
     public String getMyInput() {
         return myInput;
     }
 
+    /**
+     * Returns a string representation of the program's characters to output to the user.
+     *
+     * @return A string representation of the program's characters to output to the user.
+     */
     public String getMyOutput() {
         return myOutput;
     }
 
+    /**
+     * Returns true if instructions are currently being read and ran by the program, and false otherwise.
+     *
+     * @return True if instructions are currently being read and ran by the program, and false otherwise.
+     */
     public boolean getMyRunIsExecuting() {
         return myRunIsExecuting;
     }
 
+    /**
+     * Returns the operand value of the instruction when relevant. Can either return a 16-bit
+     * binary String value or an empty String if the Operand is not relevant to the current instruction.
+     *
+     * @return either a 16-bit value representing an operand, or an empty string, depending on the instruction.
+     */
     public String getMyOperand() {
         return myOperand;
     }
 
     // set methods:
 
-    /* Don't use this setter, we don't want to replace the Memory object with a whole new object.
-    public void setMyMemory(MemoryUnit theMemory) {
-        this.myMemory = theMemory;
-    }
-    */
-
-    // Use this to write to memory instead:
     /**
      * Store a new 8-bit, binary format String value at an address location in MyMemory.
      *
@@ -294,58 +451,210 @@ public class Controller {
      *                specified address location.
      */
     public void storeInMyMemory(int theIndex, String theData) {
-        myMemory.storeAt(theIndex, theData);
+        try {
+            if (theIndex < 0 || theIndex >= myMemory.getTotalMemoryLocations()) {
+                throw new IllegalArgumentException("Memory location out of bounds: " +
+                        "Tried to store at memory location " + theIndex + " while indexes only range from " +
+                        "0-" + (myMemory.getTotalMemoryLocations()-1) + ".");
+            }
+            if (theData.length() != 8 || !isBinaryString(theData)) {
+                throw new IllegalArgumentException("Tried to store data to Memory that either " +
+                        "contains non-binary characters or is not 8 bits long.");
+            }
+            myMemory.storeAt(theIndex, theData);
+        } catch (Exception e) {
+            System.out.println(e);
+        }
     }
 
+    /**
+     * Method called by the GUI to clear the values stored in memory as well as reset the CPU states.
+     */
+    public void clearMyMemoryAndResetCPUFields() {
+        myMemory.clearMyMemory();
+        resetFieldsForStart();
+        myRunIsExecuting = false; // Only difference needed from resetFieldsForStart() method.
+    }
+
+    /**
+     * Sets the Accumulator Register to a new 16-bit binary value.
+     *
+     * @param theAccumulatorRegister The new value to override the current Accumulator Register value.
+     */
     public void setMyAccumulatorRegister(String theAccumulatorRegister) {
-        this.myAccumulatorRegister = theAccumulatorRegister;
+        try {
+            if (theAccumulatorRegister.length() != 16 || !isBinaryString(theAccumulatorRegister)) {
+                throw new IllegalArgumentException("Tried to set the Accumulator Register to a value that contained " +
+                        "non-binary characters or was not 16-bits long.");
+            }
+            this.myAccumulatorRegister = theAccumulatorRegister;
+        } catch (Exception e){
+            System.out.println(e);
+        }
     }
 
+    /**
+     * Sets the Index Register to a new 16-bit binary value.
+     *
+     * @param theIndexRegister The new value to override the current Index Register value.
+     */
     public void setMyIndexRegister(String theIndexRegister) {
-        this.myIndexRegister =  theIndexRegister;
+        try {
+            if (theIndexRegister.length() != 16 || !isBinaryString(theIndexRegister)) {
+                throw new IllegalArgumentException("Tried to set the Index Register to a value that contained " +
+                        "non-binary characters or was not 16-bits long.");
+            }
+            this.myIndexRegister = theIndexRegister;
+        } catch (Exception e){
+            System.out.println(e);
+        }
     }
 
+    /**
+     * Sets the Stack Pointer to point to a new location.
+     *
+     * @param theStackPointer The new Memory location the Stack Pointer should point toward.
+     */
     public void setMyStackPointer(int theStackPointer) {
+        //TODO: FIND RANGES OF STACK POINTER;
         this.myStackPointer = theStackPointer;
     }
 
+    /**
+     * Sets the Program Counter to point to a new location.
+     *
+     * @param theProgramCounter The new Memory location the Program Counter should point toward.
+     */
     public void setMyProgramCounter(int theProgramCounter) {
-        this.myProgramCounter = theProgramCounter;
+        try {
+            if (theProgramCounter >= myMemory.getTotalMemoryLocations() || theProgramCounter < 0) {
+                throw new IllegalArgumentException("Program Counter out of bounds:" +
+                        "Tried to set the Program Counter to " + theProgramCounter + " while PC can only range from " +
+                        "0-" + (myMemory.getTotalMemoryLocations()-1) + ".");
+            }
+            this.myProgramCounter = theProgramCounter;
+        } catch (Exception e) {
+            System.out.println(e);
+        }
     }
 
+    /**
+     * Sets the instruction register to a new 24-bit binary value, representing the currently
+     * processing binary instruction.
+     *
+     * @param theInstructionRegister The new Instruction Register value to represent the
+     *                               currently processing binary instruction.
+     */
     public void setMyInstructionRegister(String theInstructionRegister) {
-        this.myInstructionRegister = theInstructionRegister;
+        try {
+            if (theInstructionRegister.length() != 24 || !isBinaryString(theInstructionRegister)) {
+                throw new IllegalArgumentException("Tried to set the Index Register to a value that contained " +
+                        "non-binary characters or was not 24-bits long.");
+            }
+            this.myInstructionRegister = theInstructionRegister;
+        } catch (Exception e){
+            System.out.println(e);
+        }
     }
 
+    /**
+     * Sets the N Flag to either 0 or 1.
+     *
+     * @param theNFlag The N Flag's new status.
+     */
     public void setMyNFlag(int theNFlag) {
-        this.myNFlag = theNFlag;
+        try {
+            if (theNFlag < 0 || theNFlag > 1) {
+                throw new IllegalArgumentException("Tried to set the N Flag to a value that was not 0 or 1.");
+            }
+            this.myNFlag = theNFlag;
+        } catch (Exception e){
+            System.out.println(e);
+        }
     }
 
+    /**
+     * Sets the Z Flag to either 0 or 1.
+     *
+     * @param theZFlag The Z Flag's new status.
+     */
     public void setMyZFlag(int theZFlag) {
-        this.myZFlag = theZFlag;
+        try {
+            if (theZFlag < 0 || theZFlag > 1) {
+                throw new IllegalArgumentException("Tried to set the Z Flag to a value that was not 0 or 1.");
+            }
+            this.myZFlag = theZFlag;
+        } catch (Exception e){
+            System.out.println(e);
+        }
     }
 
+    /**
+     * Sets the V Flag to either 0 or 1.
+     *
+     * @param theVFlag The V Flag's new status.
+     */
     public void setMyVFlag(int theVFlag) {
-        this.myVFlag = theVFlag;
+        try {
+            if (theVFlag < 0 || theVFlag > 1) {
+                throw new IllegalArgumentException("Tried to set the V Flag to a value that was not 0 or 1.");
+            }
+            this.myVFlag = theVFlag;
+        } catch (Exception e){
+            System.out.println(e);
+        }
     }
 
+    /**
+     * Sets the C Flag to either 0 or 1.
+     *
+     * @param theCFlag The C Flag's new status.
+     */
     public void setMyCFlag(int theCFlag) {
-        this.myCFlag = theCFlag;
+        try {
+            if (theCFlag < 0 || theCFlag > 1) {
+                throw new IllegalArgumentException("Tried to set the C Flag to a value that was not 0 or 1.");
+            }
+            this.myCFlag = theCFlag;
+        } catch (Exception e){
+            System.out.println(e);
+        }
     }
 
-    public void setMyInput(String theInput) {
-        this.myInput = theInput;
+    /**
+     * Adds theOutput String to the end of what is currently present in myOutput String.
+     *
+     * @param theOutput The String to be appended to the end of the current myOutput String.
+     */
+    public void appendToMyOutput(String theOutput) {
+        this.myOutput.concat(theOutput);
     }
 
-    public void setMyOutput(String theOutput) {
-        this.myOutput = theOutput;
-    }
-
+    /**
+     * Sets the boolean status of if the Pep/8 program is currently running and processing instructions.
+     * True means the Pep/8 program is currently running, false otherwise.
+     *
+     * @param theRunIsExecuting The new status of if the Pep/8 program is currently reading and processing instructions.
+     */
     public void setMyRunIsExecuting(Boolean theRunIsExecuting) {
         this.myRunIsExecuting = theRunIsExecuting;
     }
 
+    /**
+     * Sets a new value for the operand of the current instruction. The operand is either a 16-bit binary value or
+     * an empty string, depending on if the operand value is relevant to the current instruction.
+     *
+     * @param theOperand The new value the Operand should display in the GUI.
+     */
     public void setMyOperand(String theOperand) {
-        this.myOperand = theOperand;
+        try {
+            if ((theOperand.length() != 16 && theOperand.length() != 0) || !isBinaryString(theOperand)) {
+                throw new IllegalArgumentException("Tried to set the Operand to a value that contained " +
+                        "non-binary characters, was not 16-bits long, or was not an empty string as denoted by \"\".");
+            }
+            this.myOperand = theOperand;
+        } catch (Exception e){
+            System.out.println(e);
+        }
     }
 }

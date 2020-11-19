@@ -28,12 +28,12 @@ public class JLabeledTextArea extends JPanel {
     /**
      * The label that will sit centered on top of the main JTextArea.
      */
-    private JLabel myTitleLabel;
+    private final JLabel myTitleLabel;
 
     /**
      * The text area where users will either input information or see displayed information.
      */
-    private JTextArea myTextArea;
+    private final JTextArea myTextArea;
 
     /**
      * Constructs a custom JTextArea that scrolls horizontally, vertically, and has a centered
@@ -66,6 +66,9 @@ public class JLabeledTextArea extends JPanel {
         myTitleLabel = new JLabel(theTitle);
         myTextArea = new JTextArea(theRows, theCols);
 
+        // Format Font
+        myTextArea.setFont(new Font("monospaced", Font.PLAIN, 12));
+
         // Build Panel Format
         setLayout(new BorderLayout());
         JPanel centerLabelPanel = new JPanel();
@@ -92,6 +95,15 @@ public class JLabeledTextArea extends JPanel {
      */
     public void setText(String theNewText) {
         myTextArea.setText(theNewText);
+    }
+
+    /**
+     * Appends a string to the end of the contents of the current JTextArea.
+     *
+     * @param theNewText The new text to be added to the end of the current JTextArea.
+     */
+    public void appendText(String theNewText) {
+        myTextArea.append(theNewText);
     }
 
     /**
