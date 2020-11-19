@@ -20,15 +20,15 @@ public class BRLE extends Instruction{
     @Override
     public void execute(Controller theCon) {
         if (getMyInstructionSpecifier().charAt(7) == '0') {  // immediate mode
-            if (Converter.binToDec(theCon.getMyAccumulatorRegister()) <= 0) {               // Get the value in accumulator and compare to 0
-                theCon.setMyProgramCounter(Converter.binToDec(this.getMyOperandSpecifier())); // Jump if the value is less than or equal
+            if (theCon.getMyNFlag() == 1 && theCon.getMyZFlag() == 1) {
+                theCon.setMyProgramCounter(Converter.binToDec(this.getMyOperandSpecifier()));
             }
         } else {
-            if (Converter.binToDec(theCon.getMyAccumulatorRegister()) <= 0) {
+            if (theCon.getMyNFlag() == 1 && theCon.getMyZFlag() == 1) {
                 int operand = Converter.binToDec(getMyOperandSpecifier());
-                int dataInMemoryAddress =
-                        Converter.binToDec(theCon.getMyIndexRegister());
-                theCon.setMyProgramCounter(operand + dataInMemoryAddress);
+                int dataInIndexRegister = Converter.binToDec(theCon.getMyIndexRegister());
+                int targetAddress = Converter.binToDec(theCon.getMyMemoryDataAt(operand + dataInIndexRegister));
+                theCon.setMyProgramCounter(targetAddress);
             }
         }
     }

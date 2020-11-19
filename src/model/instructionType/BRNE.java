@@ -22,9 +22,9 @@ public class BRNE extends Instruction{
         } else {
             if (Converter.binToDec(theCon.getMyAccumulatorRegister()) != 0){
                 int operand = Converter.binToDec(getMyOperandSpecifier());
-                int dataInMemoryAddress =
-                        Converter.binToDec(theCon.getMyIndexRegister());
-                theCon.setMyProgramCounter(operand + dataInMemoryAddress);
+                int dataInIndexRegister = Converter.binToDec(theCon.getMyIndexRegister());
+                int targetAddress = Converter.binToDec(theCon.getMyMemoryDataAt(operand + dataInIndexRegister));
+                theCon.setMyProgramCounter(targetAddress);
             }
         }
     }
