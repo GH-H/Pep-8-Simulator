@@ -4,10 +4,10 @@ import controller.Controller;
 import model.Converter;
 
 /**
- * Instruction bitwise ORs the contents of a register (which can be the Accumulator Register or the Index Register)
+ * Instruction bitwise ORs the contents of a register (currently only the Accumulator register)
  * with an immediate value, direct memory location, or indirect memory location (i, d, n addressing modes).
  *
- * @version 16 November 2020
+ * @version 21 November 2020
  */
 public class ORr extends Instruction {
 
@@ -31,12 +31,17 @@ public class ORr extends Instruction {
             theCon.setMyNFlag(getNFlagFromBinary(finalANDValue));
             theCon.setMyZFlag(getZFlagFromBinary(finalANDValue));
 
-        } else { // if (instructionSpecifier.charAt(7) == '1') // AND with IndexRegister
+        }
+        /* Skip "ORX, x" implementation for now since i, n, and d have been implemented already
+         * (Requirement: min. 3 addressing modes met)
+         *
+        else { // if (instructionSpecifier.charAt(7) == '1') // AND with IndexRegister
             String finalANDValue = bitwiseOR(operand1, theCon.getMyIndexRegister());
             theCon.setMyAccumulatorRegister(finalANDValue);
             theCon.setMyNFlag(getNFlagFromBinary(finalANDValue));
             theCon.setMyZFlag(getZFlagFromBinary(finalANDValue));
         }
+        */
     }
 
     private String bitwiseOR(final String theInput1, final String theInput2) {
@@ -47,9 +52,9 @@ public class ORr extends Instruction {
             }
             for (int index = 0; index < theInput1.length(); index++) {
                 if (theInput1.charAt(index) == '0' && theInput2.charAt(index) == '0') {
-                    output.concat("0");
+                    output = output.concat("0");
                 } else { // if the matching index locations are not both 0, the ORer sets the bit to 1.
-                    output.concat("1");
+                    output = output.concat("1");
                 }
             }
         } catch (IllegalArgumentException iAE) {
@@ -78,7 +83,6 @@ public class ORr extends Instruction {
     public String getOperandValue(Controller theCon, final String theInstructionSpecifier, final String theOperandSpecifier) {
         String immediateValueOutput = ""; // Should be binary, 16-bits long
         String addressingMode = theInstructionSpecifier.substring(5); // Last 3 bits of instruction specifier
-
         if (addressingMode.equals("000")) { // Immediate value
             immediateValueOutput = theOperandSpecifier;
         } else if (addressingMode.equals("001")) {  // Direct addressing

@@ -1,6 +1,7 @@
-package view;
+package test;
 
 import org.junit.jupiter.api.Test;
+import view.JLabeledTextArea;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
@@ -25,12 +26,24 @@ public class JLabeledTextAreaTest {
      * Tests the getter and setter methods to see if they properly input and output Strings into the View.JLabeledTextArea.
      */
     @Test
-    void testSetThenGetText() {
+    void testSetTextThenGetText() {
         JLabeledTextArea testJLTextArea = new JLabeledTextArea();
-        String inputString = new String("Dog");
 
-        testJLTextArea.setText(inputString);
-        assertEquals(testJLTextArea.getText(), inputString);
+        testJLTextArea.setText("Fish");
+        testJLTextArea.setText("Dog");
+        assertEquals(testJLTextArea.getText(), "Dog");
+    }
+
+    /**
+     * Tests the appendText(...) and getText() methods to see if they properly modify and detect changes in JLabeledTextArea
+     */
+    @Test
+    void testAppendTextThenGetText() {
+        JLabeledTextArea testJLTextArea = new JLabeledTextArea();
+
+        testJLTextArea.appendText("Kitty");
+        testJLTextArea.appendText("Cat");
+        assertEquals(testJLTextArea.getText(), "KittyCat");
     }
 
     /**
@@ -39,7 +52,11 @@ public class JLabeledTextAreaTest {
     @Test
     void testToString() {
         JLabeledTextArea testJLTextArea = new JLabeledTextArea("test");
-        System.out.println(testJLTextArea);
-        assertEquals(testJLTextArea.toString(), "view.JLabeledTextArea[myTitleLabel=test,myTextArea=]");
+
+        assertEquals(testJLTextArea.toString(), "view.JLabeledTextArea[myTitleLabel=test,myTextArea=\"\"]");
+
+        testJLTextArea.setText("Fish");
+
+        assertEquals(testJLTextArea.toString(), "view.JLabeledTextArea[myTitleLabel=test,myTextArea=\"Fish\"]");
     }
 }

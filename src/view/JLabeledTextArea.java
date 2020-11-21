@@ -116,9 +116,9 @@ public class JLabeledTextArea extends JPanel {
         StringBuilder output = new StringBuilder(getClass().getName());
         output.append("[myTitleLabel=");
         output.append(myTitleLabel.getText());
-        output.append(",myTextArea=");
+        output.append(",myTextArea=\"");
         output.append(myTextArea.getText());
-        output.append("]");
+        output.append("\"]");
         return output.toString();
     }
 }

@@ -5,7 +5,7 @@ import controller.Controller;
 /**
  * Instruction bitwise inverts the value in a register, which can include the Accumulator Register or the Index Register.
  *
- * @version 16 November 2020
+ * @version 21 November 2020
  */
 public class NOTr extends Instruction {
 
@@ -23,12 +23,15 @@ public class NOTr extends Instruction {
             theCon.setMyAccumulatorRegister(invertedAccumulator);
             theCon.setMyNFlag(getNFlagFromBinary(invertedAccumulator));
             theCon.setMyZFlag(getZFlagFromBinary(invertedAccumulator));
+            theCon.setMyOperand("");
 
-        } else { // if (instructionSpecifier.charAt(7) == '1') // Invert Index Register
-            String invertedInstructionRegister = bitwiseInvert(theCon.getMyInstructionRegister());
-            theCon.setMyInstructionRegister(invertedInstructionRegister);
-            theCon.setMyNFlag(getNFlagFromBinary(invertedInstructionRegister));
-            theCon.setMyZFlag(getZFlagFromBinary(invertedInstructionRegister));
+        }
+        else { // if (instructionSpecifier.charAt(7) == '1') // Invert Index Register
+            String invertedIndexRegister = bitwiseInvert(theCon.getMyIndexRegister());
+            theCon.setMyIndexRegister(invertedIndexRegister);
+            theCon.setMyNFlag(getNFlagFromBinary(invertedIndexRegister));
+            theCon.setMyZFlag(getZFlagFromBinary(invertedIndexRegister));
+            theCon.setMyOperand("");
         }
     }
 
@@ -36,9 +39,9 @@ public class NOTr extends Instruction {
         String output = "";
         for(int index = 0; index < theInput.length(); index++) {
             if (theInput.charAt(index) == '1') {
-                output.concat("0");
+                output = output.concat("0");
             } else { // if (theInput.charAt(index) == 0)
-                output.concat("1");
+                output = output.concat("1");
             }
         }
         return output;

@@ -136,7 +136,7 @@ public class Controller {
         myStackPointer = MY_STACK_POINTER_START;
         myProgramCounter = MY_PROGRAM_COUNTER_START;
         myInstructionRegister = ZEROED_24_BITS;
-        myOperand = ZEROED_16_BITS;
+        myOperand = "";
         myNFlag = 0;
         myZFlag = 0;
         myVFlag = 0;
@@ -191,6 +191,7 @@ public class Controller {
             }
         } catch (Exception e) {
             System.out.println(e);
+            e.printStackTrace();
         }
     }
 
@@ -204,12 +205,25 @@ public class Controller {
         execution:
         while (myRunIsExecuting) {
             try {
-                // 1) Fetch Cycle: Read current instruction to MyInstructionRegister from current PC,
+                // 1) Fetch Cycle: Read current instruction to myInstructionRegister from current PC,
                 // then increment PC by 3.
                 StringBuilder instructionRegister = new StringBuilder();
-                instructionRegister.append(myMemory.getDataAt(myProgramCounter));
-                instructionRegister.append(myMemory.getDataAt(myProgramCounter+1));
-                instructionRegister.append(myMemory.getDataAt(myProgramCounter+2));
+                // If memory contains data at locations, append it to the myInstructionRegister.
+                if (myMemory.getDataAt(myProgramCounter) != null) {
+                    instructionRegister.append(myMemory.getDataAt(myProgramCounter));
+                } else {
+                    instructionRegister.append(ZEROED_8_BITS);
+                }
+                if (myMemory.getDataAt(myProgramCounter + 1) != null) {
+                    instructionRegister.append(myMemory.getDataAt(myProgramCounter + 1));
+                } else {
+                    instructionRegister.append(ZEROED_8_BITS);
+                }
+                if (myMemory.getDataAt(myProgramCounter + 2) != null) {
+                    instructionRegister.append(myMemory.getDataAt(myProgramCounter + 2));
+                } else {
+                    instructionRegister.append(ZEROED_8_BITS);
+                }
                 myInstructionRegister = instructionRegister.toString();
 
                 myProgramCounter += 3;
@@ -219,7 +233,9 @@ public class Controller {
 
                 // 3) Access Memory, 4) Execute, and 5) Store Cycle:
                 // The .execute() method modifies Memory locations and Controller fields as necessary.
-                currentInstruction.execute(this);
+                if (currentInstruction != null) {
+                    currentInstruction.execute(this);
+                }
             } catch (IllegalArgumentException e) {
                 System.out.println("error occurred -- " + e + " ");
                 e.printStackTrace();
@@ -255,7 +271,7 @@ public class Controller {
         myStackPointer = MY_STACK_POINTER_START;
         myProgramCounter = MY_PROGRAM_COUNTER_START;
         myInstructionRegister = ZEROED_24_BITS;
-        myOperand = ZEROED_8_BITS;
+        myOperand = "";
         myNFlag = 0;
         myZFlag = 0;
         myVFlag = 0;
@@ -302,6 +318,7 @@ public class Controller {
             output = myMemory.getDataAt(myMemoryIndex);
         } catch (Exception e) {
             System.out.println(e);
+            e.printStackTrace();
         }
         return output;
     }
@@ -464,6 +481,7 @@ public class Controller {
             myMemory.storeAt(theIndex, theData);
         } catch (Exception e) {
             System.out.println(e);
+            e.printStackTrace();
         }
     }
 
@@ -484,12 +502,15 @@ public class Controller {
     public void setMyAccumulatorRegister(String theAccumulatorRegister) {
         try {
             if (theAccumulatorRegister.length() != 16 || !isBinaryString(theAccumulatorRegister)) {
+                System.out.println(theAccumulatorRegister.length() != 16);
+                System.out.println(!isBinaryString(theAccumulatorRegister));
                 throw new IllegalArgumentException("Tried to set the Accumulator Register to a value that contained " +
                         "non-binary characters or was not 16-bits long.");
             }
             this.myAccumulatorRegister = theAccumulatorRegister;
         } catch (Exception e){
             System.out.println(e);
+            e.printStackTrace();
         }
     }
 
@@ -507,6 +528,7 @@ public class Controller {
             this.myIndexRegister = theIndexRegister;
         } catch (Exception e){
             System.out.println(e);
+            e.printStackTrace();
         }
     }
 
@@ -535,6 +557,7 @@ public class Controller {
             this.myProgramCounter = theProgramCounter;
         } catch (Exception e) {
             System.out.println(e);
+            e.printStackTrace();
         }
     }
 
@@ -554,6 +577,7 @@ public class Controller {
             this.myInstructionRegister = theInstructionRegister;
         } catch (Exception e){
             System.out.println(e);
+            e.printStackTrace();
         }
     }
 
@@ -570,6 +594,7 @@ public class Controller {
             this.myNFlag = theNFlag;
         } catch (Exception e){
             System.out.println(e);
+            e.printStackTrace();
         }
     }
 
@@ -586,6 +611,7 @@ public class Controller {
             this.myZFlag = theZFlag;
         } catch (Exception e){
             System.out.println(e);
+            e.printStackTrace();
         }
     }
 
@@ -602,6 +628,7 @@ public class Controller {
             this.myVFlag = theVFlag;
         } catch (Exception e){
             System.out.println(e);
+            e.printStackTrace();
         }
     }
 
@@ -618,6 +645,7 @@ public class Controller {
             this.myCFlag = theCFlag;
         } catch (Exception e){
             System.out.println(e);
+            e.printStackTrace();
         }
     }
 
@@ -655,6 +683,7 @@ public class Controller {
             this.myOperand = theOperand;
         } catch (Exception e){
             System.out.println(e);
+            e.printStackTrace();
         }
     }
 }

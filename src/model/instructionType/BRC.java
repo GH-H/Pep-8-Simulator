@@ -5,9 +5,9 @@ import model.Converter;
 
 /**
  * Instruction branches to new PC location if the C flag is set to 1.
- * Includes i and x addressing modes.
+ * Includes i addressing mode.
  *
- * @version 16 November 2020
+ * @version 21 November 2020
  */
 public class BRC extends Instruction {
 
@@ -21,19 +21,22 @@ public class BRC extends Instruction {
         String operandSpecifier = super.getMyOperandSpecifier();
 
         if (instructionSpecifier.charAt(7) == '0') { // Immediate Addressing: branch PC to operandSpecifier
-            if (theCon.getMyVFlag() == 1) { // Set PC if V flag true.
+            if (theCon.getMyCFlag() == 1) { // Set PC if C flag true.
                 theCon.setMyProgramCounter(Converter.binToDec(operandSpecifier));
             }
             // Set any other relevant registers
             theCon.setMyOperand(operandSpecifier);
-
-        } else { // if (instructionSpecifier.charAt(7) == '1') - Indexing Addressing: branch PC to indexRegiseter + operandSpecifier
+        }
+        /* Skip x addressing mode since "i," "n," and "d" are the main 3 addressing modes focused on for this Pep/8 implementation.
+         *
+        else { // if (instructionSpecifier.charAt(7) == '1') - Indexing Addressing: branch PC to indexRegiseter + operandSpecifier
             int newAddress = Converter.binToDec(operandSpecifier) + Converter.binToDec(theCon.getMyIndexRegister());
-            if (theCon.getMyVFlag() == 1) { // Set PC if V flag true.
+            if (theCon.getMyCFlag() == 1) { // Set PC if C flag true.
                 theCon.setMyProgramCounter(newAddress);
             }
             theCon.setMyOperand(decimalToBinary16BitExtender(newAddress));
         }
+         */
     }
 
     // TODO: Make this method proper or use Converter.decToBin();

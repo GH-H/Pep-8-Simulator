@@ -326,8 +326,9 @@ public class Pep8GUIFrame extends JFrame implements ActionListener {
         String hexStackPointer = Converter.decToHex(myController.getMyStackPointer(),4).toUpperCase();
         String hexProgramCounter = Converter.decToHex(myController.getMyProgramCounter(),4).toUpperCase();
         String binInstructionSpecifier = myController.getMyInstructionRegister().substring(0,8);
-        String hexOperandSpecifier = Converter.binToHex(myController.getMyInstructionRegister().substring(8)).toUpperCase();
-        String hexOperand = Converter.binToHex(myController.getMyOperand()).toUpperCase();
+        String hexOperandSpecifier = ""; // Have Operand and OperandSpecifier show up as blank if myController.getMyOperand() is an empty String.
+        String hexOperand = "";
+
 
         // Generate right states (mostly decimal)
         int decAccumulator = Converter.binToDec(myController.getMyAccumulatorRegister());
@@ -335,8 +336,20 @@ public class Pep8GUIFrame extends JFrame implements ActionListener {
         int decStackPointer = myController.getMyStackPointer();
         int decProgramCounter = myController.getMyProgramCounter();
         // TODO: FIND KEYWORD FOR INSTRUCTION SPECIFIER
-        int decOperandSpecifier = Converter.binToDec(myController.getMyInstructionRegister().substring(8));
-        int decOperand = Converter.binToDec(myController.getMyOperand());
+        String stringOperandSpecifier = "";
+        String stringOperand = "";
+
+        // If myController.getMyOperand() is not an empty string, then Operand and OperandSpecifier should be displayed in GUI.
+        if (!myController.getMyOperand().equals("")) {
+            hexOperandSpecifier = Converter.binToHex(myController.getMyInstructionRegister().substring(8)).toUpperCase();
+            hexOperand = Converter.binToHex(myController.getMyOperand()).toUpperCase();
+            hexOperandSpecifier = "0x" + hexOperandSpecifier;
+            hexOperand = "0x" + hexOperand;
+            int decOperandSpecifier = Converter.binToDec(myController.getMyInstructionRegister().substring(8));
+            int decOperand = Converter.binToDec(myController.getMyOperand());
+            stringOperandSpecifier = Integer.toString(decOperandSpecifier);
+            stringOperand = Integer.toString(decOperand);
+        }
 
         // Populate left JTextFields
         myAccumulatorStateLeftField.setText("0x" + hexAccumulator);
@@ -344,8 +357,8 @@ public class Pep8GUIFrame extends JFrame implements ActionListener {
         myStackPointerStateLeftField.setText("0x" + hexStackPointer);
         myProgramCounterStateLeftField.setText("0x" + hexProgramCounter);
         myInstructionSpecifierStateLeftField.setText(binInstructionSpecifier);
-        myOperandSpecifierStateLeftField.setText("0x" + hexOperandSpecifier);
-        myOperandStateLeftField.setText("0x" + hexOperand);
+        myOperandSpecifierStateLeftField.setText(hexOperandSpecifier);
+        myOperandStateLeftField.setText(hexOperand);
 
         // Populate right JTextFields
         myAccumulatorStateRightField.setText(Integer.toString(decAccumulator));
@@ -353,8 +366,8 @@ public class Pep8GUIFrame extends JFrame implements ActionListener {
         myStackPointerStateRightField.setText(Integer.toString(decStackPointer));
         myProgramCounterStateRightField.setText(Integer.toString(decProgramCounter));
         // TODO: PRINT KEYWORD FOR INSTRUCTION SPECIFIER
-        myOperandSpecifierStateRightField.setText(Integer.toString(decOperandSpecifier));
-        myOperandStateRightField.setText(Integer.toString(decOperand));
+        myOperandSpecifierStateRightField.setText(stringOperandSpecifier);
+        myOperandStateRightField.setText(stringOperand);
 
         // Populate NZVC Flag JTextFields
         myNFlagTextField.setText(Integer.toString(myController.getMyNFlag()));
@@ -392,19 +405,16 @@ public class Pep8GUIFrame extends JFrame implements ActionListener {
         final String command = theEvent.getActionCommand().intern();
         switch (command) {
             case RUN_SOURCE_COMMAND:
-                System.out.println("\"Run Source\" Steps Running");
                 //TODO: Call assembleSourceCodeToObjectCode() to translate the Source Code to Object Code,
                 // then write the object code to myObjectTextArea
                 //Let action follow the RUN_OBJECT_COMMAND step after. No "break;" needed here
             case RUN_OBJECT_COMMAND:
-                System.out.println("\"Run Object\" Steps Running");
                 myController.loadObjectCodeIntoMemory(myObjectCodeTextArea.getText());
-                //TODO: add myController.run();
+                myController.run();
                 updateMemoryDumpView();
                 updateCPUFieldsView();
                 break;
             case CLEAR_MEMORY_COMMAND:
-                System.out.println("\"Clear Memory\" Steps Running");
                 myController.clearMyMemoryAndResetCPUFields();
                 updateMemoryDumpView();
                 updateCPUFieldsView();

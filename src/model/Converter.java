@@ -47,6 +47,7 @@ public class Converter {
 			}
 		} catch (Exception e) {
 			System.out.println(e);
+			e.printStackTrace();
 		}
 		return hexadecimalOutput;
 	}
@@ -83,6 +84,7 @@ public class Converter {
 			}
 		} catch (Exception e) {
 			System.out.println(e);
+			e.printStackTrace();
 		}
 		return decimalOutput;
 	}
@@ -129,6 +131,7 @@ public class Converter {
 			// Else return binary as-is because it is already the perfect length in relation to theReturnLength argument.
 		} catch (Exception e) {
 			System.out.println(e);
+			e.printStackTrace();
 		}
 		return binaryOutput;
 	}
@@ -163,6 +166,7 @@ public class Converter {
 			}
 		} catch (Exception e) {
 			System.out.println(e);
+			e.printStackTrace();
 		}
 		return binaryOutput;
 	}
@@ -189,6 +193,7 @@ public class Converter {
 			decimalOutput = binToDec(binary);
 		} catch (Exception e) {
 			System.out.println(e);
+			e.printStackTrace();
 		}
 		return decimalOutput;
 	}
@@ -218,6 +223,7 @@ public class Converter {
 			hexadecimalOutput = binToHex(binary);
 		} catch (Exception e) {
 			System.out.println(e);
+			e.printStackTrace();
 		}
 		return hexadecimalOutput;
 	}

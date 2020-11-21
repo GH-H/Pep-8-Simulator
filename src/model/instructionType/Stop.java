@@ -12,5 +12,6 @@ public class Stop extends Instruction {
 	@Override
 	public void execute(Controller theCon) {
 		theCon.setMyRunIsExecuting(false);
+		theCon.setMyOperand("");
 	}
 }

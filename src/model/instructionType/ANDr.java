@@ -4,10 +4,10 @@ import controller.Controller;
 import model.Converter;
 
 /**
- * Instruction bitwise ANDs the contents of a register (which can be the Accumulator Register or the Index Register)
+ * Instruction bitwise ANDs the contents of a register (currently only the Accumulator register)
  * with an immediate value, direct memory location, or indirect memory location (i, d, n addressing modes).
  *
- * @version 16 November 2020
+ * @version 21 November 2020
  */
 public class ANDr extends Instruction {
 
@@ -31,12 +31,17 @@ public class ANDr extends Instruction {
             theCon.setMyNFlag(getNFlagFromBinary(finalANDValue));
             theCon.setMyZFlag(getZFlagFromBinary(finalANDValue));
 
-        } else { // if (instructionSpecifier.charAt(7) == '1') // AND with IndexRegister
+        }
+        /* Skip "ANDX, x" implementation for now since i, n, and d have been implemented already
+         * (Requirement: min. 3 addressing modes met)
+         *
+        else { // if (instructionSpecifier.charAt(7) == '1') // AND with IndexRegister
             String finalANDValue = bitwiseAND(operand1, theCon.getMyIndexRegister());
             theCon.setMyAccumulatorRegister(finalANDValue);
             theCon.setMyNFlag(getNFlagFromBinary(finalANDValue));
             theCon.setMyZFlag(getZFlagFromBinary(finalANDValue));
         }
+         */
     }
 
     private String bitwiseAND(final String theInput1, final String theInput2) {
@@ -47,9 +52,9 @@ public class ANDr extends Instruction {
             }
             for (int index = 0; index < theInput1.length(); index++) {
                 if (theInput1.charAt(index) == '1' && theInput2.charAt(index) == '1') {
-                    output.concat("1");
+                    output = output.concat("1");
                 } else { // if the matching index locations are not both 1, the ANDer sets the bit to 0.
-                    output.concat("0");
+                    output = output.concat("0");
                 }
             }
         } catch (IllegalArgumentException iAE) {
