@@ -321,13 +321,13 @@ public class Pep8GUIFrame extends JFrame implements ActionListener {
 
     private void updateCPUFieldsView() {
         // Generate left states (mostly hexadecimal)
-        String hexAccumulator = Converter.binToHexSetLength(myController.getMyAccumulatorRegister(),4).toUpperCase();
-        String hexIndexRegister = Converter.binToHexSetLength(myController.getMyIndexRegister(),4).toUpperCase();
-        String hexStackPointer = Converter.decToHexSetLength(myController.getMyStackPointer(),4).toUpperCase();
-        String hexProgramCounter = Converter.decToHexSetLength(myController.getMyProgramCounter(),4).toUpperCase();
+        String hexAccumulator = Converter.binToHex(myController.getMyAccumulatorRegister()).toUpperCase();
+        String hexIndexRegister = Converter.binToHex(myController.getMyIndexRegister()).toUpperCase();
+        String hexStackPointer = Converter.decToHex(myController.getMyStackPointer(),4).toUpperCase();
+        String hexProgramCounter = Converter.decToHex(myController.getMyProgramCounter(),4).toUpperCase();
         String binInstructionSpecifier = myController.getMyInstructionRegister().substring(0,8);
-        String hexOperandSpecifier = Converter.binToHexSetLength(myController.getMyInstructionRegister().substring(8),4).toUpperCase();
-        String hexOperand = Converter.binToHexSetLength(myController.getMyOperand(),4).toUpperCase();
+        String hexOperandSpecifier = Converter.binToHex(myController.getMyInstructionRegister().substring(8)).toUpperCase();
+        String hexOperand = Converter.binToHex(myController.getMyOperand()).toUpperCase();
 
         // Generate right states (mostly decimal)
         int decAccumulator = Converter.binToDec(myController.getMyAccumulatorRegister());
@@ -368,13 +368,13 @@ public class Pep8GUIFrame extends JFrame implements ActionListener {
         String[] fullMemoryDump = myController.getMyMemoryFullDump();
         for (int fakePC = 0; fakePC < myController.getMyMemoryTotalLocations(); fakePC += 8) { // Loop for each newline of the Memdump
             // For each row:
-            myMemoryTextArea.appendText(Converter.decToHexSetLength(fakePC, 4).toUpperCase() + " | ");
+            myMemoryTextArea.appendText(Converter.decToHex(fakePC, 4).toUpperCase() + " | ");
             for (int row = 0; row < 8; row++) {
                 String rawBinary = myController.getMyMemoryDataAt(fakePC + row);
                 if (rawBinary == null) {
                     myMemoryTextArea.appendText("00 ");
                 } else {
-                    myMemoryTextArea.appendText(Converter.binToHexSetLength(rawBinary, 2).toUpperCase() + " ");
+                    myMemoryTextArea.appendText(Converter.binToHex(rawBinary).toUpperCase() + " ");
                 }
             }
             myMemoryTextArea.appendText("\n");

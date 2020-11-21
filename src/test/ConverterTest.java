@@ -1,115 +1,159 @@
 package test;
 
 import model.Converter;
-import model.MemoryUnit;
-import org.junit.jupiter.api.Test;
 
+import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
+/**
+ * Tests the methods in the Converter class that are meant to translate 2's complement binary between
+ * 2's complement hexadecimal and between decimal values.
+ */
 class ConverterTest {
-    
-	Converter convert = new Converter();
-	MemoryUnit memory = new MemoryUnit();
 	
-	//test Binary to Hex
+	/**
+	 * Tests conversions of 2's complement binary to 2's complement hexadecimal.
+	 */
 	@Test
 	void testBinToHex() {
-		String binaryPositive = "0011110"; // = 22 (decimal)
-		String binaryZero = "0000";
-		String binaryNegative1 = "11111010"; // = -6 (decimal) *eight characters long
-		String binaryNegative2 = "111010"; // = -6 (decimal) *six characters long
-		assertEquals(convert.binToHex(binaryPositive),"1e");
-		assertEquals(convert.binToHex(binaryZero),"0");
-		assertEquals(convert.binToHex(binaryNegative1),"fa");	// This one passes!
-		assertEquals(convert.binToHex(binaryNegative2),"fa");	// TODO Fix: Extend binary sign bit so that length is divisible by 4, then convert to hex to get the correct 2's compliment value (like the test above)
+		String binaryPositive8Bit = "00011110";
+		String binaryPositive16Bit = "0110000111100101";
+		String binaryZero8Bit = "00000000";
+		String binaryZero16Bit = "0000000000000000";
+		String binaryNegative8Bit = "11111010";
+		String binaryNegative16Bit = "1111010110101011";
+
+		assertEquals(Converter.binToHex(binaryPositive8Bit),"1E");
+		assertEquals(Converter.binToHex(binaryPositive16Bit),"61E5");
+
+		assertEquals(Converter.binToHex(binaryZero8Bit),"00");
+		assertEquals(Converter.binToHex(binaryZero16Bit),"0000");
+
+		assertEquals(Converter.binToHex(binaryNegative8Bit),"FA");
+		assertEquals(Converter.binToHex(binaryNegative16Bit),"F5AB");
+
 	}
 
-	@Test
-	void testBinToHexSetLength() {
-		String binaryPositive = "01010";	// = 10 (decimal)
-		String binaryZero = "0";			// = 0 (decimal)
-		String binaryNegative = "10110";	// = -10 (decimal)
-		assertEquals(convert.binToHexSetLength(binaryPositive, 3), "00a");
-		//assertEquals(convert.binToHexSetLength(binaryPositive, 1), "0a"); //TODO Fix: (for Angela) Fix so that the trimmer doesn't accidentally trim off the sign bit if the next bit's sign bit doesn't match the same bit as the last sign extended bit
-		assertEquals(convert.binToHexSetLength(binaryZero, 4), "0000"); 	// ^ Ex: SignBit = 1? Trimming F away from next char 1-7 not allowed (0000 - 0111). SignBit = 0? Trimming 0 away from next char 8-f not allowed (1000 - 1111). *Can only trim leading F or 0 bits.
-		assertEquals(convert.binToHexSetLength(binaryNegative, 4), "fff6"); //TODO Fix: (for Angela): make sure that leading zero bit in binary extends trough whole hex character (multiple of four). Don't let "1 0110" extend to "0001 0110" then later bit extend to "1111 0001 01110"
-		assertEquals(convert.binToHexSetLength(binaryNegative, 1), "f6");	//TODO Fix: (for Angela): same as above ^
-	}
-	
-	//test Binary to Decimal
+	/**
+	 * Tests conversions of 2's complement binary to decimal.
+	 */
 	@Test
 	void testBinToDec() {
-		String binaryPositive = "00001010";	// = 10 (decimal)
-		String binaryZero = "00000";		// = 0 (decimal)
-		String binaryNegative = "111010";	// = -6 (decimal)
-		assertEquals(convert.binToDec(binaryPositive), 10);
-		assertEquals(convert.binToDec(binaryZero), 0);
-		assertEquals(convert.binToDec(binaryNegative), -6); //TODO Fix: Transform the negative 2's compliment binary bits to positive 2's compliment, find the decimal value, then return (-1 * positiveDecimalValue) to return negative numbers.
+		String binaryPositive8Bit = "00011110";
+		String binaryPositive16Bit = "0110000111100101";
+		String binaryZero8Bit = "00000000";
+		String binaryZero16Bit = "0000000000000000";
+		String binaryNegative8Bit = "11111010";
+		String binaryNegative16Bit = "1111010110101011";
+
+		assertEquals(Converter.binToDec(binaryPositive8Bit), 30);
+		assertEquals(Converter.binToDec(binaryPositive16Bit), 25061);
+
+		assertEquals(Converter.binToDec(binaryZero8Bit), 0);
+		assertEquals(Converter.binToDec(binaryZero16Bit), 0);
+
+		assertEquals(Converter.binToDec(binaryNegative8Bit), -6);
+		assertEquals(Converter.binToDec(binaryNegative16Bit), -2645);
 	}
-    
-	//test Decimal to Binary
+
+    /**
+     * Tests conversions from decimal to 2's complement binary.
+	 */
 	@Test
 	void testDecToBin() {
-		int decimalPositive = 10;
+		int decimalPositive8Bit = 30;
+		int decimalPositive16Bit = 25061;
 		int decimalZero = 0;
-		int decimalNegative1 = -6;
-		int decimalNegative2 = -10;
-		assertEquals(convert.decToBin(decimalPositive), "01010"); //TODO Fix: If decimal is positive, make sure binary returns with a 0 at the front.
-		assertEquals(convert.decToBin(decimalZero), "0");
-		assertEquals(convert.decToBin(decimalNegative1), "11111111111111111111111111111010");
-		assertEquals(convert.decToBin(decimalNegative2), "11111111111111111111111111110110");
+		int decimalNegative8Bit = -6;
+		int decimalNegative8Bit2 = -10;
+		int decimalNegative16Bit = -2645;
+
+		assertEquals(Converter.decToBin(decimalPositive8Bit,8), "00011110");
+		assertEquals(Converter.decToBin(decimalPositive8Bit,16), "0000000000011110");
+		assertEquals(Converter.decToBin(decimalPositive16Bit,8), "11100101");
+		assertEquals(Converter.decToBin(decimalPositive16Bit,16), "0110000111100101");
+
+		assertEquals(Converter.decToBin(decimalZero,8), "00000000");
+		assertEquals(Converter.decToBin(decimalZero,16), "0000000000000000");
+
+		assertEquals(Converter.decToBin(decimalNegative8Bit,8), "11111010");
+		assertEquals(Converter.decToBin(decimalNegative8Bit,16), "1111111111111010");
+		assertEquals(Converter.decToBin(decimalNegative8Bit2,8), "11110110");
+		assertEquals(Converter.decToBin(decimalNegative8Bit2,16), "1111111111110110");
+		assertEquals(Converter.decToBin(decimalNegative16Bit,8), "10101011");
+		assertEquals(Converter.decToBin(decimalNegative16Bit,16), "1111010110101011");
 	}
-	
-	//test Hex to Binary
+
+	/**
+	 * Tests conversions from 2's complement hexadecimal to 2's complement binary.
+	 */
 	@Test
 	void testHexToBin() {
-		String hexcodePositive = "00Ff";
-		String hexcodeZero = "0000";
-		String hexcodeNegative = "FF41";
-		assertEquals(convert.hexToBin(hexcodePositive), "011111111"); //TODO Fix: If 2's compliment hex is positive, make sure 2's compliment binary returns with a 0 at the front.
-		assertEquals(convert.hexToBin(hexcodeZero), "0");
-		assertEquals(convert.hexToBin(hexcodeNegative), "1111111101000001");
+		String hexcodePositive2Char = "7e";
+		String hexcodePositive4Char = "2C47";
+		String hexcodeZero2Char = "00";
+		String hexcodeZero4Char = "0000";
+		String hexcodeNegative2Char = "b2";
+		String hexcodeNegative4Char = "aF3d";
+
+		assertEquals(Converter.hexToBin(hexcodePositive2Char), "01111110");
+		assertEquals(Converter.hexToBin(hexcodePositive4Char), "0010110001000111");
+
+		assertEquals(Converter.hexToBin(hexcodeZero2Char), "00000000");
+		assertEquals(Converter.hexToBin(hexcodeZero4Char), "0000000000000000");
+
+		assertEquals(Converter.hexToBin(hexcodeNegative2Char), "10110010");
+		assertEquals(Converter.hexToBin(hexcodeNegative4Char), "1010111100111101");
 	}
-	
-	//test Hex to Decimal
+
+	/**
+	 * Tests conversions from 2's complement hexadecimal to decimal.
+	 */
 	@Test
 	void testHexToDec() {
-		String hexcodePositive = "00Ff";
-		String hexcodeZero = "0000";
-		String hexcodeNegative1 = "Ff";
-		String hexcodeNegative2 = "ff0f";
-		assertEquals(convert.hexToDec(hexcodePositive), 255);
-		assertEquals(convert.hexToDec(hexcodeZero), 0);
-		assertEquals(convert.hexToDec(hexcodeNegative1), -1);		// TODO Fix: If sign bit is negative, can do hex -> binary, then invert the binary to a positive binary value, then find the positive decimal, then return (-1 * positiveDecimalValue)
-		assertEquals(convert.hexToDec(hexcodeNegative2), -241);	// TODO FIX: Same as above ^
+		String hexcodePositive2Char = "7e";
+		String hexcodePositive4Char = "2C47";
+		String hexcodeZero2Char = "00";
+		String hexcodeZero4Char = "0000";
+		String hexcodeNegative2Char = "b2";
+		String hexcodeNegative4Char = "aF3d";
+
+		assertEquals(Converter.hexToDec(hexcodePositive2Char), 126);
+		assertEquals(Converter.hexToDec(hexcodePositive4Char), 11335);
+
+		assertEquals(Converter.hexToDec(hexcodeZero2Char), 0);
+		assertEquals(Converter.hexToDec(hexcodeZero4Char), 0);
+
+		assertEquals(Converter.hexToDec(hexcodeNegative2Char), -78);
+		assertEquals(Converter.hexToDec(hexcodeNegative4Char), -20675);
 	}
-	
-	//test Decimal to Hex
+
+	/**
+	 * Tests conversions from decimal to 2's complement hexadecimal.
+	 */
 	@Test 
 	void testDecToHex() {
-		int decimalPostive = 10;
+		int decimalPositive8Bit = 30;
+		int decimalPositive16Bit = 25061;
 		int decimalZero = 0;
-		int decimalNegative = -6;
-		assertEquals(convert.decToHex(decimalPostive), "0a"); // TODO: If decimal is positive, make sure hex value retains front sign bit of "0" to retain 2's compliment. 10(decimal) in unsigned binary is "1010", which if in 2's compliment would be mistaken for -6(decimal).
-		assertEquals(convert.decToHex(decimalZero), "0");
-		assertEquals(convert.decToHex(decimalNegative), "fffffffa");
-	}
+		int decimalNegative8Bit = -6;
+		int decimalNegative8Bit2 = -10;
+		int decimalNegative16Bit = -2645;
 
-	@Test
-	void testDecToHexSetLength() {
-		int decimalPositive = 10;
-		int decimalZero = 0;
-		int decimalNegative = -10;	// = 1111 0110 (binary)
-		assertEquals(convert.decToHexSetLength(decimalPositive, 3), "00a");
-		assertEquals(convert.decToHexSetLength(decimalPositive, 1), "0a"); //TODO Fix: (for Angela) same as below v
-		assertEquals(convert.decToHexSetLength(decimalZero, 4), "0000");
-		assertEquals(convert.decToHexSetLength(decimalNegative, 4), "fff6");
-		assertEquals(convert.decToHexSetLength(decimalNegative, 1), "f6"); //TODO Fix: (for Angela) Fix so that the trimmer doesn't accidentally trim off the sign bit if the next bit's sign bit doesn't match the same bit as the last sign extended bit.
-	}																						   // ^ Ex: SignBit = 1? Trimming F away from next char 1-7 not allowed (0000 - 0111). SignBit = 0? Trimming 0 away from next char 8-f not allowed (1000 - 1111). *Can only trim leading F or 0 bits.
+		assertEquals(Converter.decToHex(decimalPositive8Bit,2), "1E");
+		assertEquals(Converter.decToHex(decimalPositive8Bit,4), "001E");
+		assertEquals(Converter.decToHex(decimalPositive16Bit,2), "E5");
+		assertEquals(Converter.decToHex(decimalPositive16Bit,4), "61E5");
 
-	@Test
-	void testMemoryUnit() {
-		memory.storeAt(1, "The End");
-		assertEquals(memory.getDataAt(1), "The End");
+		assertEquals(Converter.decToHex(decimalZero,2), "00");
+		assertEquals(Converter.decToHex(decimalZero,4), "0000");
+
+		assertEquals(Converter.decToHex(decimalNegative8Bit,2), "FA");
+		assertEquals(Converter.decToHex(decimalNegative8Bit,4), "FFFA");
+		assertEquals(Converter.decToHex(decimalNegative8Bit2,2), "F6");
+		assertEquals(Converter.decToHex(decimalNegative8Bit2,4), "FFF6");
+		assertEquals(Converter.decToHex(decimalNegative16Bit,2), "AB");
+		assertEquals(Converter.decToHex(decimalNegative16Bit,4), "F5AB");
+
 	}
 }
