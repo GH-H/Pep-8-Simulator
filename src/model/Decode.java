@@ -31,19 +31,42 @@ public final class Decode {
 				theCon.setMyInstructionWordLabel("Stop");
 				break;
 
-			case "01110000"://i,ac
-			case "01111000"://i,index
-			case "01110001"://address,ac
+				// TODO - Figure out why these case statements are not working as intended
+				/* These case statements are not cooperating for some reason.
+				 * In order for the GUI to run, they are temporarily commented out, but should be fixed at some point.
+				 * It claims that Addr and Subr are symbols that cannot be found.
+				 * This happened before and after Angela added the .setMyInstructionWordLabel() functions for the GUI.
+				 *
+			case "01110000": //i,ac
 				instruction = new Addr(instructionSpecifier, operandSpecifier);
+				theCon.setMyInstructionWordLabel("ADDA, i");
+				break;
+			case "01111000": //i,index
+				instruction = new Addr(instructionSpecifier, operandSpecifier);
+				theCon.setMyInstructionWordLabel("ADDX, i");
+				break;
+			case "01110001": //address,ac
+				instruction = new Addr(instructionSpecifier, operandSpecifier);
+				theCon.setMyInstructionWordLabel("ADDA, d");
 				break;
 
-			case "10000000"://i,ac
-			case "10001000"://i,index
-			case "10000001"://address,ac
-			case "10001001"://address,index
+			case "10000000": //i,ac
 				instruction = new Subr(instructionSpecifier, operandSpecifier);
+				theCon.setMyInstructionWordLabel("SUBA, i");
 				break;
-
+			case "10001000": //i,index
+				instruction = new Subr(instructionSpecifier, operandSpecifier);
+				theCon.setMyInstructionWordLabel("SUBX, i");
+				break;
+			case "10000001": //address,ac
+				instruction = new Subr(instructionSpecifier, operandSpecifier);
+				theCon.setMyInstructionWordLabel("SUBA, d");
+				break;
+			case "10001001": //address,index
+				instruction = new Subr(instructionSpecifier, operandSpecifier);
+				theCon.setMyInstructionWordLabel("SUBX, d");
+				break;
+			*/
 			case "00010010":  // BRV i
 				instruction = new BRV(instructionSpecifier, operandSpecifier);
 				theCon.setMyInstructionWordLabel("BRV, i");
@@ -89,6 +112,15 @@ public final class Decode {
 				theCon.setMyInstructionWordLabel("ORA, i");
 				break;
 
+			case "01001010": // CharIn, n
+				instruction = new CharIn(instructionSpecifier, operandSpecifier);
+				theCon.setMyInstructionWordLabel("CHARI, n");
+				break;
+			case "01001001": // CharIn, d
+				instruction = new CharIn(instructionSpecifier, operandSpecifier);
+				theCon.setMyInstructionWordLabel("CHARI, d");
+				break;
+
 			default:
 				theCon.setMyInstructionWordLabel("");
 				throw new IllegalArgumentException("Instruction " + instructionSpecifier + " not supported.");
@@ -96,28 +128,3 @@ public final class Decode {
 		return instruction;
 	}
 }
-			/* Old switch statement values that used to exist before reformatting
-			case "01110":// instruction: add
-				instruction = new Add(node[0]+ node[1],node[2]);
-				break;
-
-			case "11000":// instruction: load
-				instruction = new LW(node[0]+node[1], node[2]);
-				break;
-
-			case "11100":// instruction: store
-				instruction = new SW(node[0]+ node[1], node[2]);
-				break;
-
-			case "10000":// instruction: subtract
-				instruction = new Sub(node[0]+node[1], node[2]);
-				break;
-
-			case "01001":// instruction: character input
-				instruction = new CharIn(node[0]+node[1], node[2]);
-				break;
-
-			case "01010":// instruction: character output
-				instruction = new CharOut(node[0]+ node[1], node[2]);
-				break;
-			*/

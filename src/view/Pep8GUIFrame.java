@@ -410,9 +410,10 @@ public class Pep8GUIFrame extends JFrame implements ActionListener {
                 //Let action follow the RUN_OBJECT_COMMAND step after. No "break;" needed here
             case RUN_OBJECT_COMMAND:
                 myController.loadObjectCodeIntoMemory(myObjectCodeTextArea.getText());
-                myController.run();
+                myController.run(myInputTextArea.getText());
                 updateMemoryDumpView();
                 updateCPUFieldsView();
+                myOutputTextArea.setText(myController.getMyOutput());
                 break;
             case CLEAR_MEMORY_COMMAND:
                 myController.clearMyMemoryAndResetCPUFields();

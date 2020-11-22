@@ -30,7 +30,6 @@ public class ANDr extends Instruction {
             theCon.setMyAccumulatorRegister(finalANDValue);
             theCon.setMyNFlag(getNFlagFromBinary(finalANDValue));
             theCon.setMyZFlag(getZFlagFromBinary(finalANDValue));
-
         }
         /* Skip "ANDX, x" implementation for now since i, n, and d have been implemented already
          * (Requirement: min. 3 addressing modes met)

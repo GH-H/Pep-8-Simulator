@@ -17,7 +17,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
  *
  *  @version 21 November 2020
  */
-public class BRC_BRV_NOTr_ANDr_ORr_Test {
+public class BRC_BRV_NOTr_ANDr_ORr_CharIn_Test {
 
     /**
      * Test BRC, i (Not branching)
@@ -338,5 +338,81 @@ public class BRC_BRV_NOTr_ANDr_ORr_Test {
         assertEquals(controller.getMyNFlag(), 1);
         assertEquals(controller.getMyZFlag(), 0);
         assertEquals(controller.getMyOperand(), "1000000000000010"); // Contents stored in Memory locations 10,11
+    }
+
+    /**
+     * Test CharIn, d
+     */
+    @Test
+    public void testCharIn_d() {
+        Controller controller = new Controller();
+        CharIn charIn = new CharIn("01001001","0000000000001010"); // CharIn 10,d
+
+        // Set up user Input
+        controller.setMyInput("Dog");
+
+        // Check to see if CharIn recorded the input 'D' to location 10 in memory.
+        charIn.execute(controller);
+        assertEquals(controller.getMyMemoryDataAt(10), "01000100"); // 'D' = 68 (decimal) = 01000100 (binary)
+        assertEquals(controller.getMyOperand(), "0000000001000100");
+        assertEquals(controller.getMyInput(), "og");
+
+        // Check to see if CharIn recorded the input 'o' to location 10 in memory.
+        charIn.execute(controller);
+        assertEquals(controller.getMyMemoryDataAt(10), "01101111"); // 'o' = 111 (decimal) = 1101111 (binary)
+        assertEquals(controller.getMyOperand(), "0000000001101111");
+        assertEquals(controller.getMyInput(), "g");
+
+        // Check to see if CharIn recorded the input 'g' to location 10 in memory.
+        charIn.execute(controller);
+        assertEquals(controller.getMyMemoryDataAt(10), "01100111"); // 'g' = 103 (decimal) = 01100111 (binary)
+        assertEquals(controller.getMyOperand(), "0000000001100111");
+        assertEquals(controller.getMyInput(), "");
+
+        // Check to see if CharIn recorded the input "00000000" to location 10 in memory.
+        charIn.execute(controller);
+        assertEquals(controller.getMyMemoryDataAt(10), "00000000"); // no char to read = 0 (decimal) = 00000000 (binary)
+        assertEquals(controller.getMyOperand(), "0000000000000000");
+        assertEquals(controller.getMyInput(), "");
+    }
+
+    /**
+     * Test CharIn, n
+     */
+    @Test
+    public void testCharIn_n() {
+        Controller controller = new Controller();
+        CharIn charIn = new CharIn("01001010","0000000000000101"); // CharIn 5,n
+
+        // Memory locations 5,6 stores word "0000 0000 0000 1010" = 10(decimal) (Direct address stored here)
+        controller.storeInMyMemory(5, "00000000");
+        controller.storeInMyMemory(6, "00001010");
+
+        // Set up user Input
+        controller.setMyInput("Dog");
+
+        // Check to see if CharIn recorded the input 'D' to location 10 in memory.
+        charIn.execute(controller);
+        assertEquals(controller.getMyMemoryDataAt(10), "01000100"); // 'D' = 68 (decimal) = 01000100 (binary)
+        assertEquals(controller.getMyOperand(), "0000000001000100");
+        assertEquals(controller.getMyInput(), "og");
+
+        // Check to see if CharIn recorded the input 'o' to location 10 in memory.
+        charIn.execute(controller);
+        assertEquals(controller.getMyMemoryDataAt(10), "01101111"); // 'o' = 111 (decimal) = 1101111 (binary)
+        assertEquals(controller.getMyOperand(), "0000000001101111");
+        assertEquals(controller.getMyInput(), "g");
+
+        // Check to see if CharIn recorded the input 'g' to location 10 in memory.
+        charIn.execute(controller);
+        assertEquals(controller.getMyMemoryDataAt(10), "01100111"); // 'g' = 103 (decimal) = 01100111 (binary)
+        assertEquals(controller.getMyOperand(), "0000000001100111");
+        assertEquals(controller.getMyInput(), "");
+
+        // Check to see if CharIn recorded the input "00000000" to location 10 in memory.
+        charIn.execute(controller);
+        assertEquals(controller.getMyMemoryDataAt(10), "00000000"); // no char to read = 0 (decimal) = 00000000 (binary)
+        assertEquals(controller.getMyOperand(), "0000000000000000");
+        assertEquals(controller.getMyInput(), "");
     }
 }

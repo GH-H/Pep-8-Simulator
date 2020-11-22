@@ -205,9 +205,10 @@ public class Controller {
     /**
      *
      */
-    public void run(){
+    public void run(String theUserInput){
         // Reset starting values.
         resetFieldsForStart();
+        setMyInput(theUserInput);
 
         execution:
         while (myRunIsExecuting) {
@@ -671,6 +672,37 @@ public class Controller {
             System.out.println(e);
             e.printStackTrace();
         }
+    }
+
+    /**
+     * Sets the total string of input characters the user entered in the GUI Input text area before running the program.
+     * myInput removes tabs and newlines from the input string.
+     *
+     * @param theInput The total string of input character the user entered in the GUI Input text area before running
+     *                 the program.
+     */
+    public void setMyInput(final String theInput) {
+        String modifiedInput = theInput.replaceAll("\t","");
+        modifiedInput = modifiedInput.replaceAll("\n", "");
+        this.myInput = modifiedInput;
+    }
+
+    /**
+     * Returns the first char of myInput, then decrements the front of the myInput record since the character returned
+     * has been processed and the program needs to work on the next character in future calls.
+     *
+     * @return The first char of myInput.
+     */
+    public char getAndRemoveFirstCharFromMyInput() {
+        char output = 0;
+        if (myInput.length() > 1) {
+            output = myInput.charAt(0);
+            myInput = myInput.substring(1);
+        } else if (myInput.length() == 1) {
+            output = myInput.charAt(0);
+            myInput = "";
+        }
+        return output;
     }
 
     /**
