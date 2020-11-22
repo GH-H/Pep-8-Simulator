@@ -31,12 +31,6 @@ public final class Decode {
 				theCon.setMyInstructionWordLabel("Stop");
 				break;
 
-				// TODO - Figure out why these case statements are not working as intended
-				/* These case statements are not cooperating for some reason.
-				 * In order for the GUI to run, they are temporarily commented out, but should be fixed at some point.
-				 * It claims that Addr and Subr are symbols that cannot be found.
-				 * This happened before and after Angela added the .setMyInstructionWordLabel() functions for the GUI.
-				 *
 			case "01110000": //i,ac
 				instruction = new Addr(instructionSpecifier, operandSpecifier);
 				theCon.setMyInstructionWordLabel("ADDA, i");
@@ -66,7 +60,7 @@ public final class Decode {
 				instruction = new Subr(instructionSpecifier, operandSpecifier);
 				theCon.setMyInstructionWordLabel("SUBX, d");
 				break;
-			*/
+
 			case "00010010":  // BRV i
 				instruction = new BRV(instructionSpecifier, operandSpecifier);
 				theCon.setMyInstructionWordLabel("BRV, i");
