@@ -5,6 +5,12 @@ import model.Decode;
 import model.MemoryUnit;
 import model.instructionType.Instruction;
 
+/**
+ * Connects the CPU States, memory, and user input to calculate final register and memory states after running
+ * user-input assembly language.
+ *
+ * @version 22 November 20202
+ */
 public class Controller {
     /**
      * The default starting memory location of the Stack Pointer.
@@ -203,7 +209,7 @@ public class Controller {
     }
 
     /**
-     *
+     * Method that has the Pep/8 program read instructions from memory and modify registers, flags, and memory as necessary.
      */
     public void run(String theUserInput){
         // Reset starting values.
@@ -250,6 +256,42 @@ public class Controller {
                 break execution;
             }
         }
+    }
+
+    /**
+     * Method called by the GUI to clear the values stored in memory as well as reset the CPU states.
+     */
+    public void clearMyMemoryAndResetCPUFields() {
+        myMemory.clearMyMemory();
+        resetFieldsForStart();
+        myRunIsExecuting = false; // Only difference needed from resetFieldsForStart() method.
+    }
+
+    /**
+     * Returns the first char of myInput, then decrements the front of the myInput record since the character returned
+     * has been processed and the program needs to work on the next character in future calls.
+     *
+     * @return The first char of myInput.
+     */
+    public char getAndRemoveFirstCharFromMyInput() {
+        char output = 0;
+        if (myInput.length() > 1) {
+            output = myInput.charAt(0);
+            myInput = myInput.substring(1);
+        } else if (myInput.length() == 1) {
+            output = myInput.charAt(0);
+            myInput = "";
+        }
+        return output;
+    }
+
+    /**
+     * Adds theOutput String to the end of what is currently present in myOutput String.
+     *
+     * @param theOutput The String to be appended to the end of the current myOutput String.
+     */
+    public void appendToMyOutput(String theOutput) {
+        this.myOutput = this.myOutput.concat(theOutput);
     }
 
     /**
@@ -504,15 +546,6 @@ public class Controller {
     }
 
     /**
-     * Method called by the GUI to clear the values stored in memory as well as reset the CPU states.
-     */
-    public void clearMyMemoryAndResetCPUFields() {
-        myMemory.clearMyMemory();
-        resetFieldsForStart();
-        myRunIsExecuting = false; // Only difference needed from resetFieldsForStart() method.
-    }
-
-    /**
      * Sets the Accumulator Register to a new 16-bit binary value.
      *
      * @param theAccumulatorRegister The new value to override the current Accumulator Register value.
@@ -556,8 +589,17 @@ public class Controller {
      * @param theStackPointer The new Memory location the Stack Pointer should point toward.
      */
     public void setMyStackPointer(int theStackPointer) {
-        //TODO: FIND RANGES OF STACK POINTER;
-        this.myStackPointer = theStackPointer;
+        try {
+            if (theStackPointer >= myMemory.getTotalMemoryLocations() || theStackPointer < 0) {
+                throw new IllegalArgumentException("Stack Pointer out of bounds:" +
+                        "Tried to set the Stack Pointer to " + theStackPointer + " while the Stack Pointer " +
+                        "can only range from 0-" + (myMemory.getTotalMemoryLocations()-1) + ".");
+            }
+            this.myStackPointer = theStackPointer;
+        } catch (Exception e) {
+            System.out.println(e);
+            e.printStackTrace();
+        }
     }
 
     /**
@@ -685,33 +727,6 @@ public class Controller {
         String modifiedInput = theInput.replaceAll("\t","");
         modifiedInput = modifiedInput.replaceAll("\n", "");
         this.myInput = modifiedInput;
-    }
-
-    /**
-     * Returns the first char of myInput, then decrements the front of the myInput record since the character returned
-     * has been processed and the program needs to work on the next character in future calls.
-     *
-     * @return The first char of myInput.
-     */
-    public char getAndRemoveFirstCharFromMyInput() {
-        char output = 0;
-        if (myInput.length() > 1) {
-            output = myInput.charAt(0);
-            myInput = myInput.substring(1);
-        } else if (myInput.length() == 1) {
-            output = myInput.charAt(0);
-            myInput = "";
-        }
-        return output;
-    }
-
-    /**
-     * Adds theOutput String to the end of what is currently present in myOutput String.
-     *
-     * @param theOutput The String to be appended to the end of the current myOutput String.
-     */
-    public void appendToMyOutput(String theOutput) {
-        this.myOutput.concat(theOutput);
     }
 
     /**
