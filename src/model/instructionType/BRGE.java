@@ -19,6 +19,7 @@ public class BRGE extends Instruction {
             if (theCon.getMyNFlag() == 0) {               // Get the value in accumulator and compare to 0
                 theCon.setMyProgramCounter(Converter.binToDec(this.getMyOperandSpecifier())); // Jump if the value is less than or equal
             }
+            theCon.setMyOperand(super.getMyOperandSpecifier());
         } else {
             if (theCon.getMyNFlag() == 0) {
                 int operand = Converter.binToDec(getMyOperandSpecifier());
@@ -26,6 +27,7 @@ public class BRGE extends Instruction {
                 int targetAddress = Converter.binToDec(theCon.getMyMemoryDataAt(operand + dataInIndexRegister));
                 theCon.setMyProgramCounter(targetAddress);
             }
+            theCon.setMyOperand(super.getMyOperandSpecifier());
         }
     }
 }

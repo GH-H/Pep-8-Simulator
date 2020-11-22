@@ -21,8 +21,9 @@ public class BREQ extends Instruction {
     public void execute(Controller theCon) {
         if (getMyInstructionSpecifier().charAt(7) == '0') {  // immediate mode
             if (theCon.getMyZFlag() == 1) {               // Get the value in accumulator and compare to 0
-                theCon.setMyProgramCounter(Converter.binToDec(this.getMyOperandSpecifier())); // Jump if the value is less than or equal
+                theCon.setMyProgramCounter(Converter.binToDec(this.getMyOperandSpecifier())); // Jump if the Z set to 1
             }
+            theCon.setMyOperand(super.getMyOperandSpecifier());
         } else {
             if (theCon.getMyZFlag() == 1) {
                 int operand = Converter.binToDec(getMyOperandSpecifier());
@@ -30,6 +31,7 @@ public class BREQ extends Instruction {
                 int targetAddress = Converter.binToDec(theCon.getMyMemoryDataAt(operand + dataInIndexRegister));
                 theCon.setMyProgramCounter(targetAddress);
             }
+            theCon.setMyOperand(super.getMyOperandSpecifier());
         }
     }
 }

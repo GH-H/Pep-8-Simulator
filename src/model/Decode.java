@@ -30,14 +30,30 @@ public final class Decode {
 				instruction = new Stop(instructionSpecifier, null);
 				theCon.setMyInstructionWordLabel("Stop");
 				break;
+
+			case "01110000"://i,ac
+			case "01111000"://i,index
+			case "01110001"://address,ac
+				instruction = new Addr(instructionSpecifier, operandSpecifier);
+				break;
+
+			case "10000000"://i,ac
+			case "10001000"://i,index
+			case "10000001"://address,ac
+			case "10001001"://address,index
+				instruction = new Subr(instructionSpecifier, operandSpecifier);
+				break;
+
 			case "00010010":  // BRV i
 				instruction = new BRV(instructionSpecifier, operandSpecifier);
 				theCon.setMyInstructionWordLabel("BRV, i");
 				break;
+
 			case "00010100":  // BRC i
 				instruction = new BRC(instructionSpecifier, operandSpecifier);
 				theCon.setMyInstructionWordLabel("BRC, i");
 				break;
+
 			case "00011001":  // NOTX
 				instruction = new NOTr(instructionSpecifier, operandSpecifier);
 				theCon.setMyInstructionWordLabel("NOTX");
@@ -46,6 +62,7 @@ public final class Decode {
 				instruction = new NOTr(instructionSpecifier, operandSpecifier);
 				theCon.setMyInstructionWordLabel("NOTA");
 				break;
+
 			case "10010010": // ANDA, n
 				instruction = new ANDr(instructionSpecifier, operandSpecifier);
 				theCon.setMyInstructionWordLabel("ANDA, n");
@@ -58,6 +75,7 @@ public final class Decode {
 				instruction = new ANDr(instructionSpecifier, operandSpecifier);
 				theCon.setMyInstructionWordLabel("ANDA, i");
 				break;
+
 			case "10100010": // ORA, n
 				instruction = new ORr(instructionSpecifier, operandSpecifier);
 				theCon.setMyInstructionWordLabel("ORA, n");
@@ -70,6 +88,7 @@ public final class Decode {
 				instruction = new ORr(instructionSpecifier, operandSpecifier);
 				theCon.setMyInstructionWordLabel("ORA, i");
 				break;
+
 			default:
 				theCon.setMyInstructionWordLabel("");
 				throw new IllegalArgumentException("Instruction " + instructionSpecifier + " not supported.");
