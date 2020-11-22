@@ -21,11 +21,13 @@ public class BR extends Instruction{
         if(getMyInstructionSpecifier().charAt(7) == '0') {
             int jumpAddress = Converter.binToDec(this.getMyOperandSpecifier());
             theCon.setMyProgramCounter(jumpAddress);
+            theCon.setMyOperand(super.getMyOperandSpecifier());
         } else {
             int operand = Converter.binToDec(getMyOperandSpecifier());
             int dataInIndexRegister = Converter.binToDec(theCon.getMyIndexRegister());
             int targetAddress = Converter.binToDec(theCon.getMyMemoryDataAt(operand + dataInIndexRegister));
             theCon.setMyProgramCounter(targetAddress);
+            theCon.setMyOperand(super.getMyOperandSpecifier());
         }
     }
 }

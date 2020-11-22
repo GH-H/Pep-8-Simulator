@@ -23,6 +23,7 @@ public class BRLT extends Instruction{
             if (theCon.getMyNFlag() == 1) {
                 theCon.setMyProgramCounter(Converter.binToDec(this.getMyOperandSpecifier()));
             }
+            theCon.setMyOperand(super.getMyOperandSpecifier());
         } else {
             if (theCon.getMyNFlag() == 1) {
                 int operand = Converter.binToDec(getMyOperandSpecifier());
@@ -30,6 +31,7 @@ public class BRLT extends Instruction{
                 int targetAddress = Converter.binToDec(theCon.getMyMemoryDataAt(operand + dataInIndexRegister));
                 theCon.setMyProgramCounter(targetAddress);
             }
+            theCon.setMyOperand(super.getMyOperandSpecifier());
         }
     }
 }
