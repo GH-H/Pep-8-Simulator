@@ -28,26 +28,38 @@ public final class Decode {
 			case "00000000": // STOP
 				instruction = new Stop(instructionSpecifier, null);
 				break;
+
+			case "01110000"://i,ac
+			case "01111000"://i,index
+			case "01110001"://address,ac
+				instruction = new Addr(instructionSpecifier, operandSpecifier);
+				break;
+
 			case "00010010":  // BRV i
 				instruction = new BRV(instructionSpecifier, operandSpecifier);
 				break;
+
 			case "00010100":  // BRC i
 				instruction = new BRC(instructionSpecifier, operandSpecifier);
 				break;
+
 			case "00011001":  // NOTX
 			case "00011000":  // NOTA
 				instruction = new NOTr(instructionSpecifier, operandSpecifier);
 				break;
+
 			case "10010010": // ANDA, n
 			case "10010001": // ANDA, d
 			case "10010000": // ANDA, i
 				instruction = new ANDr(instructionSpecifier, operandSpecifier);
 				break;
+
 			case "10100010": // ORA, n
 			case "10100001": // ORA, d
 			case "10100000": // ORA, i
 				instruction = new ORr(instructionSpecifier, operandSpecifier);
 				break;
+				
 			default:
 				throw new IllegalArgumentException("Instruction " + instructionSpecifier + " not supported.");
 		}
