@@ -17,6 +17,7 @@ public class Subr extends Instruction {
 		String addressingMode = super.getMyInstructionSpecifier().substring(4);
 		int ac =  Converter.binToDec(theCon.getMyAccumulatorRegister());
 		int operand = Converter.binToDec(super.getMyOperandSpecifier());
+		theCon.setMyOperand(super.getMyOperandSpecifier());
 
 		if (addressingMode.equals("0000")) { // Immediate value,ac
 			int result = ac - operand;
