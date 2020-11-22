@@ -15,8 +15,8 @@ public class SW extends Instruction {
 
 	@Override
 	public void execute(Controller theCon) {
+		theCon.setMyOperand(super.getMyOperandSpecifier());
 		int address =  Converter.binToDec(getMyOperandSpecifier());
-
 		theCon.storeInMyMemory(address,theCon.getMyAccumulatorRegister());
 
 	}
