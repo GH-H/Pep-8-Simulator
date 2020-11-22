@@ -4,7 +4,7 @@ import controller.Controller;
 import model.Converter;
 
 /**
- * Instruction bitwise ANDs the contents of a register (currently only the Accumulator register)
+ * Instruction bitwise ANDs the contents of a register (Accumulator Register or Index Register)
  * with an immediate value, direct memory location, or indirect memory location (i, d, n addressing modes).
  *
  * @version 21 November 2020
@@ -21,26 +21,21 @@ public class ANDr extends Instruction {
         String operandSpecifier = super.getMyOperandSpecifier();
 
         // Identifies addressing mode & gives final immediate value of operand.
-        String operand1 = getOperandValue(theCon, instructionSpecifier, operandSpecifier);
-        theCon.setMyOperand(operand1);
+        String operand = getOperandValue(theCon, instructionSpecifier, operandSpecifier);
+        theCon.setMyOperand(operand);
 
         // Pick whether to AND with the Accumulator or IndexRegister
         if (instructionSpecifier.charAt(4) == '0') { // AND with Accumulator
-            String finalANDValue = bitwiseAND(operand1, theCon.getMyAccumulatorRegister());
+            String finalANDValue = bitwiseAND(operand, theCon.getMyAccumulatorRegister());
             theCon.setMyAccumulatorRegister(finalANDValue);
             theCon.setMyNFlag(getNFlagFromBinary(finalANDValue));
             theCon.setMyZFlag(getZFlagFromBinary(finalANDValue));
-        }
-        /* Skip "ANDX, x" implementation for now since i, n, and d have been implemented already
-         * (Requirement: min. 3 addressing modes met)
-         *
-        else { // if (instructionSpecifier.charAt(7) == '1') // AND with IndexRegister
-            String finalANDValue = bitwiseAND(operand1, theCon.getMyIndexRegister());
-            theCon.setMyAccumulatorRegister(finalANDValue);
+        } else if (instructionSpecifier.charAt(4) == '1') { // AND with Index Register
+            String finalANDValue = bitwiseAND(operand, theCon.getMyIndexRegister());
+            theCon.setMyIndexRegister(finalANDValue);
             theCon.setMyNFlag(getNFlagFromBinary(finalANDValue));
             theCon.setMyZFlag(getZFlagFromBinary(finalANDValue));
         }
-         */
     }
 
     private String bitwiseAND(final String theInput1, final String theInput2) {
@@ -69,7 +64,7 @@ public class ANDr extends Instruction {
 
     private int getZFlagFromBinary(final String theBinary) {
         int output = 0;
-        if (theBinary.indexOf("1") == -1) { // There are no 1's in the binary string.
+        if (!theBinary.contains("1")) { // There are no 1's in the binary string.
             output = 1;
         }
         return output;

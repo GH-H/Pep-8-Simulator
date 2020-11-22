@@ -7,6 +7,8 @@ import static java.lang.Integer.toBinaryString;
 /**
  * This class was designed to convert any given 
  * code (For now only 2's complement binary, 2's complement hex and decimal).
+ *
+ * @version 21 November 2020
  */
 public class Converter {
 

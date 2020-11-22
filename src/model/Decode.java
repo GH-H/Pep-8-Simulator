@@ -7,6 +7,8 @@ import model.instructionType.*;
 /**
  * This class reads the input binary strings and assign them to correct
  * instruction obj
+ *
+ * @version 22 November 2020
  */
 public final class Decode {
 
@@ -71,46 +73,70 @@ public final class Decode {
 				theCon.setMyInstructionWordLabel("BRC, i");
 				break;
 
-			case "00011001":  // NOTX
-				instruction = new NOTr(instructionSpecifier, operandSpecifier);
-				theCon.setMyInstructionWordLabel("NOTX");
-				break;
 			case "00011000":  // NOTA
 				instruction = new NOTr(instructionSpecifier, operandSpecifier);
 				theCon.setMyInstructionWordLabel("NOTA");
 				break;
+			case "00011001":  // NOTX
+				instruction = new NOTr(instructionSpecifier, operandSpecifier);
+				theCon.setMyInstructionWordLabel("NOTX");
+				break;
 
-			case "10010010": // ANDA, n
+			case "10010000": // ANDA, i
 				instruction = new ANDr(instructionSpecifier, operandSpecifier);
-				theCon.setMyInstructionWordLabel("ANDA, n");
+				theCon.setMyInstructionWordLabel("ANDA, i");
 				break;
 			case "10010001": // ANDA, d
 				instruction = new ANDr(instructionSpecifier, operandSpecifier);
 				theCon.setMyInstructionWordLabel("ANDA, d");
 				break;
-			case "10010000": // ANDA, i
+			case "10010010": // ANDA, n
 				instruction = new ANDr(instructionSpecifier, operandSpecifier);
-				theCon.setMyInstructionWordLabel("ANDA, i");
+				theCon.setMyInstructionWordLabel("ANDA, n");
+				break;
+			case "10011000": // ANDX, i
+				instruction = new ANDr(instructionSpecifier, operandSpecifier);
+				theCon.setMyInstructionWordLabel("ANDX, i");
+				break;
+			case "10011001": // ANDX, d
+				instruction = new ANDr(instructionSpecifier, operandSpecifier);
+				theCon.setMyInstructionWordLabel("ANDX, d");
+				break;
+			case "10011010": // ANDX, n
+				instruction = new ANDr(instructionSpecifier, operandSpecifier);
+				theCon.setMyInstructionWordLabel("ANDX, n");
 				break;
 
-			case "10100010": // ORA, n
+			case "10100000": // ORA, i
 				instruction = new ORr(instructionSpecifier, operandSpecifier);
-				theCon.setMyInstructionWordLabel("ORA, n");
+				theCon.setMyInstructionWordLabel("ORA, i");
 				break;
 			case "10100001": // ORA, d
 				instruction = new ORr(instructionSpecifier, operandSpecifier);
 				theCon.setMyInstructionWordLabel("ORA, d");
 				break;
-			case "10100000": // ORA, i
+			case "10100010": // ORA, n
 				instruction = new ORr(instructionSpecifier, operandSpecifier);
-				theCon.setMyInstructionWordLabel("ORA, i");
+				theCon.setMyInstructionWordLabel("ORA, n");
+				break;
+			case "10101000": // ORX, i
+				instruction = new ORr(instructionSpecifier, operandSpecifier);
+				theCon.setMyInstructionWordLabel("ORX, i");
+				break;
+			case "10101001": // ORX, d
+				instruction = new ORr(instructionSpecifier, operandSpecifier);
+				theCon.setMyInstructionWordLabel("ORX, d");
+				break;
+			case "10101010": // ORX, n
+				instruction = new ORr(instructionSpecifier, operandSpecifier);
+				theCon.setMyInstructionWordLabel("ORX, n");
 				break;
 
-			case "01001010": // CharIn, n
+			case "01001010": // CHARI, n
 				instruction = new CharIn(instructionSpecifier, operandSpecifier);
 				theCon.setMyInstructionWordLabel("CHARI, n");
 				break;
-			case "01001001": // CharIn, d
+			case "01001001": // CHARI, d
 				instruction = new CharIn(instructionSpecifier, operandSpecifier);
 				theCon.setMyInstructionWordLabel("CHARI, d");
 				break;

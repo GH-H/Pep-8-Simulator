@@ -212,8 +212,8 @@ public class Controller {
      * Method that has the Pep/8 program read instructions from memory and modify registers, flags, and memory as necessary.
      */
     public void run(String theUserInput){
-        // Reset starting values.
-        resetFieldsForStart();
+        // Reset starting values (while retaining old registers and flags).
+        resetPointersForNextRun();
         setMyInput(theUserInput);
 
         execution:
@@ -263,8 +263,20 @@ public class Controller {
      */
     public void clearMyMemoryAndResetCPUFields() {
         myMemory.clearMyMemory();
-        resetFieldsForStart();
-        myRunIsExecuting = false; // Only difference needed from resetFieldsForStart() method.
+        myAccumulatorRegister = ZEROED_16_BITS;
+        myIndexRegister = ZEROED_16_BITS;
+        myStackPointer = MY_STACK_POINTER_START;
+        myProgramCounter = MY_PROGRAM_COUNTER_START;
+        myInstructionRegister = ZEROED_24_BITS;
+        myOperand = "";
+        myInstructionWordLabel = "";
+        myNFlag = 0;
+        myZFlag = 0;
+        myVFlag = 0;
+        myCFlag = 0;
+        myInput = "";
+        myOutput = "";
+        myRunIsExecuting = false;
     }
 
     /**
@@ -313,9 +325,10 @@ public class Controller {
     }
 
     /**
-     *  Resets the registers, pointers, flags, and input and output values to default values for a new program run.
+     *  Resets the pointers, input, and output values to default values for a new program run,
+     *  while retaining register and flag information from the previous run.
      */
-    private void resetFieldsForStart() {
+    private void resetPointersForNextRun() {
         myAccumulatorRegister = ZEROED_16_BITS;
         myIndexRegister = ZEROED_16_BITS;
         myStackPointer = MY_STACK_POINTER_START;
@@ -367,6 +380,9 @@ public class Controller {
                         "0-" + (myMemory.getTotalMemoryLocations()-1) + ".");
             }
             output = myMemory.getDataAt(myMemoryIndex);
+            if (output == null) {
+                output = "00000000";
+            }
         } catch (Exception e) {
             System.out.println(e);
             e.printStackTrace();

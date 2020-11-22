@@ -13,7 +13,10 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
  *  NOTA
  *  NOTX
  *  ANDA, i n d
+ *  ANDX, i n d
  *  ORA, i n d
+ *  ORX, i n d
+ *  CHARI, n d
  *
  *  @version 21 November 2020
  */
@@ -200,7 +203,7 @@ public class BRC_BRV_NOTr_ANDr_ORr_CharIn_Test {
     @Test
     public void testANDA_n() {
         Controller controller = new Controller();
-        ANDr andA = new ANDr("10010010","0000000000000101"); // ANDA 5,d
+        ANDr andA = new ANDr("10010010","0000000000000101"); // ANDA 5,n
 
         // Check N and Z flags are 0 before executing.
         assertEquals(controller.getMyNFlag(), 0);
@@ -227,6 +230,111 @@ public class BRC_BRV_NOTr_ANDr_ORr_CharIn_Test {
         controller.setMyAccumulatorRegister("0000000000000000");
         andA.execute(controller);
         assertEquals(controller.getMyAccumulatorRegister(), "0000000000000000");
+        assertEquals(controller.getMyNFlag(), 0);
+        assertEquals(controller.getMyZFlag(), 1);
+        assertEquals(controller.getMyOperand(), "1000000000001010");
+    }
+
+    /**
+     * Test ANDX, i (ANDr affecting Index Register)
+     */
+    @Test
+    public void testANDX_i() {
+        Controller controller = new Controller();
+        ANDr andX = new ANDr("10011000","1000000000001010"); // ANDX 32778,i
+
+        // Check N and Z flags are 0 before executing.
+        assertEquals(controller.getMyNFlag(), 0);
+        assertEquals(controller.getMyZFlag(), 0);
+
+        // Artificially setup Index Register to hold a value
+        controller.setMyIndexRegister("1000000000001100");
+
+        // Execute and confirm that "1010" AND "1100" = "1000" for rightmost 4 bits in Operand Specifier.
+        // Also confirm that N flag was set to 1.
+        andX.execute(controller);
+        assertEquals(controller.getMyIndexRegister(), "1000000000001000");
+        assertEquals(controller.getMyNFlag(), 1);
+        assertEquals(controller.getMyZFlag(), 0);
+        assertEquals(controller.getMyOperand(), "1000000000001010");
+
+        // Now AND the Index Register so that you can set the Z flag to 1.
+        controller.setMyIndexRegister("0000000000000000");
+        andX.execute(controller);
+        assertEquals(controller.getMyIndexRegister(), "0000000000000000");
+        assertEquals(controller.getMyNFlag(), 0);
+        assertEquals(controller.getMyZFlag(), 1);
+        assertEquals(controller.getMyOperand(), "1000000000001010");
+    }
+
+    /**
+     * Test ANDX, d (ANDr affecting Index Register)
+     */
+    @Test
+    public void testANDX_d() {
+        Controller controller = new Controller();
+        ANDr andX = new ANDr("10011001","0000000000001010"); // ANDX 10,d
+
+        // Check N and Z flags are 0 before executing.
+        assertEquals(controller.getMyNFlag(), 0);
+        assertEquals(controller.getMyZFlag(), 0);
+
+        // Artificially setup Accumulator to hold a value
+        controller.setMyIndexRegister("1000000000001100");
+        // Memory locations 10,11 stores word "1000 0000 0000 1010"
+        controller.storeInMyMemory(10, "10000000");
+        controller.storeInMyMemory(11, "00001010");
+
+        // Execute and confirm that "1010" AND "1100" = "1000" for rightmost 4 bits in Operand Specifier.
+        // Also confirm that N flag was set to 1.
+        andX.execute(controller);
+        assertEquals(controller.getMyIndexRegister(), "1000000000001000");
+        assertEquals(controller.getMyNFlag(), 1);
+        assertEquals(controller.getMyZFlag(), 0);
+        assertEquals(controller.getMyOperand(), "1000000000001010");
+
+        // Now AND the Accumulator Register so that you can set the Z flag to 1.
+        controller.setMyIndexRegister("0000000000000000");
+        andX.execute(controller);
+        assertEquals(controller.getMyIndexRegister(), "0000000000000000");
+        assertEquals(controller.getMyNFlag(), 0);
+        assertEquals(controller.getMyZFlag(), 1);
+        assertEquals(controller.getMyOperand(), "1000000000001010");
+    }
+
+    /**
+     * Test ANDX, n (ANDr affecting Index Register)
+     */
+    @Test
+    public void testANDX_n() {
+        Controller controller = new Controller();
+        ANDr andX = new ANDr("10011010","0000000000000101"); // ANDX 5,n
+
+        // Check N and Z flags are 0 before executing.
+        assertEquals(controller.getMyNFlag(), 0);
+        assertEquals(controller.getMyZFlag(), 0);
+
+        // Artificially setup Accumulator to hold a value
+        controller.setMyIndexRegister("1000000000001100");
+        // Memory locations 5,6 stores word "0000 0000 0000 1010" = 10(decimal) (Direct address stored here)
+        controller.storeInMyMemory(5, "00000000");
+        controller.storeInMyMemory(6, "00001010");
+        // Memory locations 10,11 stores word "1000 0000 0000 1010" (immediate value stored here)
+        controller.storeInMyMemory(10, "10000000");
+        controller.storeInMyMemory(11, "00001010");
+
+        // Execute and confirm that "1010" AND "1100" = "1000" for rightmost 4 bits in Operand Specifier.
+        // Also confirm that N flag was set to 1.
+        andX.execute(controller);
+        assertEquals(controller.getMyIndexRegister(), "1000000000001000");
+        assertEquals(controller.getMyNFlag(), 1);
+        assertEquals(controller.getMyZFlag(), 0);
+        assertEquals(controller.getMyOperand(), "1000000000001010");
+
+        // Now AND the Accumulator Register so that you can set the Z flag to 1.
+        controller.setMyIndexRegister("0000000000000000");
+        andX.execute(controller);
+        assertEquals(controller.getMyIndexRegister(), "0000000000000000");
         assertEquals(controller.getMyNFlag(), 0);
         assertEquals(controller.getMyZFlag(), 1);
         assertEquals(controller.getMyOperand(), "1000000000001010");
@@ -341,12 +449,120 @@ public class BRC_BRV_NOTr_ANDr_ORr_CharIn_Test {
     }
 
     /**
+     * Test ORX, i (ANDr affecting Index Register)
+     */
+    @Test
+    public void testORX_i() {
+        Controller controller = new Controller();
+        ORr orX = new ORr("10101000","0000000000001010"); // ORX 10,i
+
+        // Check N and Z flags are 0 before executing.
+        assertEquals(controller.getMyNFlag(), 0);
+        assertEquals(controller.getMyZFlag(), 0);
+
+        // Confirm that the OperandSpecifier perfectly OR'd itself into the Index Register
+        orX.execute(controller);
+        assertEquals(controller.getMyIndexRegister(), "0000000000001010");
+        assertEquals(controller.getMyNFlag(), 0);
+        assertEquals(controller.getMyZFlag(), 0);
+        assertEquals(controller.getMyOperand(), "0000000000001010");
+
+        // Now OR another value into the Index Register to see that it OR'd properly.
+        // Also confirm that N flag was set to 1.
+        ORr orA2 = new ORr("10101000","1000000000000010"); // ORA 32770,i
+        orA2.execute(controller);
+        assertEquals(controller.getMyIndexRegister(), "1000000000001010");
+        assertEquals(controller.getMyNFlag(), 1);
+        assertEquals(controller.getMyZFlag(), 0);
+        assertEquals(controller.getMyOperand(), "1000000000000010");
+    }
+
+    /**
+     * Test ORX, d (ANDr affecting Index Register)
+     */
+    @Test
+    public void testORX_d() {
+        Controller controller = new Controller();
+        ORr orX = new ORr("10101001","0000000000001010"); // ORX 10,d
+
+        // Check N and Z flags are 0 before executing.
+        assertEquals(controller.getMyNFlag(), 0);
+        assertEquals(controller.getMyZFlag(), 0);
+
+        // Artificially setup Index Register to hold a value
+        controller.setMyIndexRegister("0000000000000000");
+        // Memory locations 10,11 stores word "0000 0000 0000 1010"
+        controller.storeInMyMemory(10, "00000000");
+        controller.storeInMyMemory(11, "00001010");
+
+        // Confirm that the OperandSpecifier perfectly OR'd itself into the Index Register
+        orX.execute(controller);
+        assertEquals(controller.getMyIndexRegister(), "0000000000001010");
+        assertEquals(controller.getMyNFlag(), 0);
+        assertEquals(controller.getMyZFlag(), 0);
+        assertEquals(controller.getMyOperand(), "0000000000001010");    // Contents stored in Memory locations 10,11
+
+        // Now OR another value into the Index Register to see that it OR'd properly.
+        // Also confirm that N flag was set to 1.
+        // Memory locations 10,11 stores word "1000 0000 0000 0010"
+        controller.storeInMyMemory(10, "10000000");
+        controller.storeInMyMemory(11, "00000010");
+        orX.execute(controller);
+        assertEquals(controller.getMyIndexRegister(), "1000000000001010");
+        assertEquals(controller.getMyNFlag(), 1);
+        assertEquals(controller.getMyZFlag(), 0);
+        assertEquals(controller.getMyOperand(), "1000000000000010"); // Contents stored in Memory locations 10,11
+    }
+
+    /**
+     * Test ORX, n (ANDr affecting Index Register)
+     */
+    @Test
+    public void testORX_n() {
+        Controller controller = new Controller();
+        ORr orX = new ORr("10101010","0000000000000101"); // ORX 5,n
+
+        // Check N and Z flags are 0 before executing.
+        assertEquals(controller.getMyNFlag(), 0);
+        assertEquals(controller.getMyZFlag(), 0);
+
+        // Artificially setup Index Register to hold a value
+        controller.setMyIndexRegister("0000000000000000");
+
+        // Memory locations 5,6 stores word "0000 0000 0000 1010" = 10(decimal) (Direct address stored here)
+        controller.storeInMyMemory(5, "00000000");
+        controller.storeInMyMemory(6, "00001010");
+
+        // Memory locations 10,11 stores word "0000 0000 0000 1010" (Immediate value stored here)
+        controller.storeInMyMemory(10, "00000000");
+        controller.storeInMyMemory(11, "00001010");
+
+        // Confirm that the OperandSpecifier perfectly OR'd itself into the Index Register
+        orX.execute(controller);
+        assertEquals(controller.getMyIndexRegister(), "0000000000001010");
+        assertEquals(controller.getMyNFlag(), 0);
+        assertEquals(controller.getMyZFlag(), 0);
+        assertEquals(controller.getMyOperand(), "0000000000001010");    // Contents stored in Memory locations 10,11
+
+        // Now OR another value into the Index Register to see that it OR'd properly.
+        // Also confirm that N flag was set to 1.
+        // Memory locations 10,11 stores word "1000 0000 0000 0010"
+        controller.storeInMyMemory(10, "10000000");
+        controller.storeInMyMemory(11, "00000010");
+        orX.execute(controller);
+        assertEquals(controller.getMyIndexRegister(), "1000000000001010");
+        assertEquals(controller.getMyNFlag(), 1);
+        assertEquals(controller.getMyZFlag(), 0);
+        assertEquals(controller.getMyOperand(), "1000000000000010"); // Contents stored in Memory locations 10,11
+    }
+
+    /**
      * Test CharIn, d
      */
     @Test
     public void testCharIn_d() {
         Controller controller = new Controller();
-        CharIn charIn = new CharIn("01001001","0000000000001010"); // CharIn 10,d
+        CharIn charIn = new CharIn("01001001","0000000000001010"); // CHARI 10,d
 
         // Set up user Input
         controller.setMyInput("Dog");
@@ -382,7 +598,7 @@ public class BRC_BRV_NOTr_ANDr_ORr_CharIn_Test {
     @Test
     public void testCharIn_n() {
         Controller controller = new Controller();
-        CharIn charIn = new CharIn("01001010","0000000000000101"); // CharIn 5,n
+        CharIn charIn = new CharIn("01001010","0000000000000101"); // CHARI 5,n
 
         // Memory locations 5,6 stores word "0000 0000 0000 1010" = 10(decimal) (Direct address stored here)
         controller.storeInMyMemory(5, "00000000");

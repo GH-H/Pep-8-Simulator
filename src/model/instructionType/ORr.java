@@ -4,7 +4,7 @@ import controller.Controller;
 import model.Converter;
 
 /**
- * Instruction bitwise ORs the contents of a register (currently only the Accumulator register)
+ * Instruction bitwise ORs the contents of a register (Accumulator Register or Index Register)
  * with an immediate value, direct memory location, or indirect memory location (i, d, n addressing modes).
  *
  * @version 21 November 2020
@@ -21,34 +21,29 @@ public class ORr extends Instruction {
         String operandSpecifier = super.getMyOperandSpecifier();
 
         // Identifies addressing mode & gives final immediate value of operand.
-        String operand1 = getOperandValue(theCon, instructionSpecifier, operandSpecifier);
-        theCon.setMyOperand(operand1);
+        String operand = getOperandValue(theCon, instructionSpecifier, operandSpecifier);
+        theCon.setMyOperand(operand);
 
-        // Pick whether to AND with the Accumulator or IndexRegister
-        if (instructionSpecifier.charAt(4) == '0') { // AND with Accumulator
-            String finalANDValue = bitwiseOR(operand1, theCon.getMyAccumulatorRegister());
-            theCon.setMyAccumulatorRegister(finalANDValue);
-            theCon.setMyNFlag(getNFlagFromBinary(finalANDValue));
-            theCon.setMyZFlag(getZFlagFromBinary(finalANDValue));
+        // Pick whether to OR with the Accumulator or IndexRegister
+        if (instructionSpecifier.charAt(4) == '0') { // OR with Accumulator
+            String finalORValue = bitwiseOR(operand, theCon.getMyAccumulatorRegister());
+            theCon.setMyAccumulatorRegister(finalORValue);
+            theCon.setMyNFlag(getNFlagFromBinary(finalORValue));
+            theCon.setMyZFlag(getZFlagFromBinary(finalORValue));
 
+        } else if (instructionSpecifier.charAt(4) == '1') { // OR with Index Register
+            String finalORValue = bitwiseOR(operand, theCon.getMyIndexRegister());
+            theCon.setMyIndexRegister(finalORValue);
+            theCon.setMyNFlag(getNFlagFromBinary(finalORValue));
+            theCon.setMyZFlag(getZFlagFromBinary(finalORValue));
         }
-        /* Skip "ORX, x" implementation for now since i, n, and d have been implemented already
-         * (Requirement: min. 3 addressing modes met)
-         *
-        else { // if (instructionSpecifier.charAt(7) == '1') // AND with IndexRegister
-            String finalANDValue = bitwiseOR(operand1, theCon.getMyIndexRegister());
-            theCon.setMyAccumulatorRegister(finalANDValue);
-            theCon.setMyNFlag(getNFlagFromBinary(finalANDValue));
-            theCon.setMyZFlag(getZFlagFromBinary(finalANDValue));
-        }
-        */
     }
 
     private String bitwiseOR(final String theInput1, final String theInput2) {
         String output = "";
         try {
             if (theInput1.length() != theInput2.length()) {
-                throw new IllegalArgumentException();
+                throw new IllegalArgumentException("Tried to OR binaries of mismatched length.");
             }
             for (int index = 0; index < theInput1.length(); index++) {
                 if (theInput1.charAt(index) == '0' && theInput2.charAt(index) == '0') {
@@ -58,7 +53,7 @@ public class ORr extends Instruction {
                 }
             }
         } catch (IllegalArgumentException iAE) {
-            System.out.println("error occurred -- " + iAE + " ");
+            System.out.println(iAE);
             iAE.printStackTrace();
         }
         return output;

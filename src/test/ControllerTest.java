@@ -55,7 +55,7 @@ public class ControllerTest {
     public void gettersTest() {
         Controller cont = new Controller();
 
-        assertEquals(cont.getMyMemoryDataAt(0), null);
+        assertEquals(cont.getMyMemoryDataAt(0), "00000000");
         assertEquals(cont.getMyMemoryFullDump().length, 65536);
         assertEquals(cont.getMyMemoryTotalLocations(), 65536);
         assertEquals(cont.getMyAccumulatorRegister(), ZEROED_16_BITS);
@@ -133,8 +133,8 @@ public class ControllerTest {
         assertEquals(cont.getMyMemoryDataAt(1), "00001100");
         assertEquals(cont.getMyMemoryDataAt(2), "10101111");
         assertEquals(cont.getMyMemoryDataAt(3), "00000000");
-        assertEquals(cont.getMyMemoryDataAt(4), null);
-        assertEquals(cont.getMyMemoryDataAt(5), null);
+        assertEquals(cont.getMyMemoryDataAt(4), "00000000");
+        assertEquals(cont.getMyMemoryDataAt(5), "00000000");
     }
 
     /**
@@ -182,7 +182,7 @@ public class ControllerTest {
         cont.clearMyMemoryAndResetCPUFields();
 
         // Check that fields are reset from before.
-        assertEquals(cont.getMyMemoryDataAt(0), null);
+        assertEquals(cont.getMyMemoryDataAt(0), "00000000");
         assertEquals(cont.getMyMemoryFullDump().length, 65536);
         assertEquals(cont.getMyMemoryTotalLocations(), 65536);
         assertEquals(cont.getMyAccumulatorRegister(), ZEROED_16_BITS);

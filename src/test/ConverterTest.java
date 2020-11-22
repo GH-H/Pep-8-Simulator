@@ -8,6 +8,8 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 /**
  * Tests the methods in the Converter class that are meant to translate 2's complement binary between
  * 2's complement hexadecimal and between decimal values.
+ *
+ * @version 21 November 2020
  */
 class ConverterTest {
 	
