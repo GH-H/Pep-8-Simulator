@@ -8,16 +8,21 @@ import model.Converter;
  * This class is the SW instruction
  */
 
-public class SW extends Instruction {
-	public SW(String myInstructionSpecifier, String myOperandSpecifier) {
+public class Str extends Instruction {
+	public Str(String myInstructionSpecifier, String myOperandSpecifier) {
 		super(myInstructionSpecifier, myOperandSpecifier);
 	}
 
 	@Override
 	public void execute(Controller theCon) {
 		theCon.setMyOperand(super.getMyOperandSpecifier());
+
+		String first = (theCon.getMyAccumulatorRegister().substring(0,9));
+		String second = (theCon.getMyAccumulatorRegister().substring(9));
 		int address =  Converter.binToDec(getMyOperandSpecifier());
-		theCon.storeInMyMemory(address,theCon.getMyAccumulatorRegister());
+
+		theCon.storeInMyMemory(address,first);
+		theCon.storeInMyMemory(address+1,second);
 
 	}
 }
