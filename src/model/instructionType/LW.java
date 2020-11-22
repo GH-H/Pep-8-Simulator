@@ -2,6 +2,7 @@
 package model.instructionType;
 
 import controller.Controller;
+import model.Converter;
 
 /**
  * This class is the LW instruction
@@ -15,6 +16,8 @@ public class LW extends Instruction {
 
 	@Override
 	public void execute(Controller theCon) {
+		int address = Converter.binToDec(super.getMyOperandSpecifier());
 
+		theCon.setMyAccumulatorRegister(theCon.getMyMemoryDataAt(address));
 	}
 }

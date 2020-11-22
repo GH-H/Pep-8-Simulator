@@ -2,6 +2,7 @@
 package model.instructionType;
 
 import controller.Controller;
+import model.Converter;
 
 /**
  * This class is the SW instruction
@@ -14,6 +15,9 @@ public class SW extends Instruction {
 
 	@Override
 	public void execute(Controller theCon) {
+		int address =  Converter.binToDec(getMyOperandSpecifier());
+
+		theCon.storeInMyMemory(address,theCon.getMyAccumulatorRegister());
 
 	}
 }
