@@ -35,6 +35,13 @@ public final class Decode {
 				instruction = new Addr(instructionSpecifier, operandSpecifier);
 				break;
 
+			case "10000000"://i,ac
+			case "10001000"://i,index
+			case "10000001"://address,ac
+			case "10001001"://address,index
+				instruction = new Subr(instructionSpecifier, operandSpecifier);
+				break;
+
 			case "00010010":  // BRV i
 				instruction = new BRV(instructionSpecifier, operandSpecifier);
 				break;
@@ -59,7 +66,7 @@ public final class Decode {
 			case "10100000": // ORA, i
 				instruction = new ORr(instructionSpecifier, operandSpecifier);
 				break;
-				
+
 			default:
 				throw new IllegalArgumentException("Instruction " + instructionSpecifier + " not supported.");
 		}
