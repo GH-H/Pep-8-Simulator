@@ -83,6 +83,12 @@ public class Controller {
     private String myOperand;
 
     /**
+     * This is the word-label String that displays the name of the current instruction running for the GUI to display.
+     * This is set in the Decoder class.
+     */
+    private String myInstructionWordLabel;
+
+    /**
      * Negative Flag
      * Holds a 1 if the previous instruction generated a negative value, and holds a 0 otherwise.
      */
@@ -137,6 +143,7 @@ public class Controller {
         myProgramCounter = MY_PROGRAM_COUNTER_START;
         myInstructionRegister = ZEROED_24_BITS;
         myOperand = "";
+        myInstructionWordLabel = "";
         myNFlag = 0;
         myZFlag = 0;
         myVFlag = 0;
@@ -229,7 +236,7 @@ public class Controller {
                 myProgramCounter += 3;
 
                 // 2) Decode Cycle: The type of instruction is decoded
-                Instruction currentInstruction = myDecode.decodeInstruction(myInstructionRegister);
+                Instruction currentInstruction = myDecode.decodeInstruction(this, myInstructionRegister);
 
                 // 3) Access Memory, 4) Execute, and 5) Store Cycle:
                 // The .execute() method modifies Memory locations and Controller fields as necessary.
@@ -272,6 +279,7 @@ public class Controller {
         myProgramCounter = MY_PROGRAM_COUNTER_START;
         myInstructionRegister = ZEROED_24_BITS;
         myOperand = "";
+        myInstructionWordLabel = "";
         myNFlag = 0;
         myZFlag = 0;
         myVFlag = 0;
@@ -382,6 +390,15 @@ public class Controller {
      */
     public String getMyInstructionRegister() {
         return myInstructionRegister;
+    }
+
+    /**
+     * Returns a String that details in words what instruction is currently executing for the GUI to display.
+     *
+     * @return Returns a String that details in words what instruction is currently executing.
+     */
+    public String getMyInstructionWordLabel() {
+        return myInstructionWordLabel;
     }
 
     /**
@@ -579,6 +596,13 @@ public class Controller {
             System.out.println(e);
             e.printStackTrace();
         }
+    }
+
+    /**
+     * Sets a String that details in words what instruction is currently executing for the GUI to display.
+     */
+    public void setMyInstructionWordLabel(final String theInstructionWordLabel) {
+        this.myInstructionWordLabel =  theInstructionWordLabel;
     }
 
     /**

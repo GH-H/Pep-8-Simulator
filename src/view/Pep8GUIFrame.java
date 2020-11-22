@@ -302,7 +302,7 @@ public class Pep8GUIFrame extends JFrame implements ActionListener {
     private JTextField makeUnfocusableTextField(int theColumns) {
         JTextField textField = new JTextField(theColumns);
         textField.setFont(new Font("monospaced", Font.PLAIN, 12));
-        textField.setHorizontalAlignment(JTextField.CENTER); //TODO: Fix this not centering text as expected.
+        textField.setHorizontalAlignment(JTextField.CENTER);
         textField.setFocusable(false);
         return textField;
     }
@@ -335,7 +335,7 @@ public class Pep8GUIFrame extends JFrame implements ActionListener {
         int decIndexRegister = Converter.binToDec(myController.getMyIndexRegister());
         int decStackPointer = myController.getMyStackPointer();
         int decProgramCounter = myController.getMyProgramCounter();
-        // TODO: FIND KEYWORD FOR INSTRUCTION SPECIFIER
+        String stringInstructionWordLabel = myController.getMyInstructionWordLabel();
         String stringOperandSpecifier = "";
         String stringOperand = "";
 
@@ -365,7 +365,7 @@ public class Pep8GUIFrame extends JFrame implements ActionListener {
         myIndexRegisterStateRightField.setText(Integer.toString(decIndexRegister));
         myStackPointerStateRightField.setText(Integer.toString(decStackPointer));
         myProgramCounterStateRightField.setText(Integer.toString(decProgramCounter));
-        // TODO: PRINT KEYWORD FOR INSTRUCTION SPECIFIER
+        myInstructionSpecifierStateRightField.setText(stringInstructionWordLabel);
         myOperandSpecifierStateRightField.setText(stringOperandSpecifier);
         myOperandStateRightField.setText(stringOperand);
 

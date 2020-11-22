@@ -1,6 +1,7 @@
 
 package model;
 
+import controller.Controller;
 import model.instructionType.*;
 
 /**
@@ -14,7 +15,7 @@ public final class Decode {
 	 * 
 	 * @throws IllegalArgumentException if value for immediate is out of bound.
 	 */
-	public Instruction decodeInstruction(final String theInstructionRegister) throws IllegalArgumentException {
+	public Instruction decodeInstruction(final Controller theCon, final String theInstructionRegister) throws IllegalArgumentException {
 		Instruction instruction;
 
 		if (theInstructionRegister.length() != 24) {
@@ -27,28 +28,50 @@ public final class Decode {
 		switch (instructionSpecifier) {
 			case "00000000": // STOP
 				instruction = new Stop(instructionSpecifier, null);
+				theCon.setMyInstructionWordLabel("Stop");
 				break;
 			case "00010010":  // BRV i
 				instruction = new BRV(instructionSpecifier, operandSpecifier);
+				theCon.setMyInstructionWordLabel("BRV, i");
 				break;
 			case "00010100":  // BRC i
 				instruction = new BRC(instructionSpecifier, operandSpecifier);
+				theCon.setMyInstructionWordLabel("BRC, i");
 				break;
 			case "00011001":  // NOTX
+				instruction = new NOTr(instructionSpecifier, operandSpecifier);
+				theCon.setMyInstructionWordLabel("NOTX");
+				break;
 			case "00011000":  // NOTA
 				instruction = new NOTr(instructionSpecifier, operandSpecifier);
+				theCon.setMyInstructionWordLabel("NOTA");
 				break;
 			case "10010010": // ANDA, n
+				instruction = new ANDr(instructionSpecifier, operandSpecifier);
+				theCon.setMyInstructionWordLabel("ANDA, n");
+				break;
 			case "10010001": // ANDA, d
+				instruction = new ANDr(instructionSpecifier, operandSpecifier);
+				theCon.setMyInstructionWordLabel("ANDA, d");
+				break;
 			case "10010000": // ANDA, i
 				instruction = new ANDr(instructionSpecifier, operandSpecifier);
+				theCon.setMyInstructionWordLabel("ANDA, i");
 				break;
 			case "10100010": // ORA, n
+				instruction = new ORr(instructionSpecifier, operandSpecifier);
+				theCon.setMyInstructionWordLabel("ORA, n");
+				break;
 			case "10100001": // ORA, d
+				instruction = new ORr(instructionSpecifier, operandSpecifier);
+				theCon.setMyInstructionWordLabel("ORA, d");
+				break;
 			case "10100000": // ORA, i
 				instruction = new ORr(instructionSpecifier, operandSpecifier);
+				theCon.setMyInstructionWordLabel("ORA, i");
 				break;
 			default:
+				theCon.setMyInstructionWordLabel("");
 				throw new IllegalArgumentException("Instruction " + instructionSpecifier + " not supported.");
 		}
 		return instruction;
