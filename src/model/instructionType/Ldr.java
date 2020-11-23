@@ -8,9 +8,9 @@ import model.Converter;
  * This class is the LW instruction
  */
 
-public class LW extends Instruction {
+public class Ldr extends Instruction {
 
-	public LW(String myInstructionSpecifier, String myOperandSpecifier) {
+	public Ldr(String myInstructionSpecifier, String myOperandSpecifier) {
 		super(myInstructionSpecifier, myOperandSpecifier);
 	}
 
@@ -19,6 +19,6 @@ public class LW extends Instruction {
 		theCon.setMyOperand(super.getMyOperandSpecifier());
 		int address = Converter.binToDec(super.getMyOperandSpecifier());
 
-		theCon.setMyAccumulatorRegister(theCon.getMyMemoryDataAt(address));
+		theCon.setMyAccumulatorRegister(theCon.getMyMemoryDataAt(address)+ theCon.getMyMemoryDataAt(address+1));
 	}
 }
