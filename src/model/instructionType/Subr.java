@@ -20,18 +20,18 @@ public class Subr extends Instruction {
 		theCon.setMyOperand(super.getMyOperandSpecifier());
 		String result;
 		if (addressingMode.equals("0000")) { // Immediate value,ac
-			result = Converter.decToBin(ac - operand,16);
+			result = Converter.decToBin(operand-ac,16);
 			theCon.setMyAccumulatorRegister(result);
 		} else if (addressingMode.equals("1000")) {  // Immediate value,index
-			result = Converter.decToBin(ac - operand,16);
+			result = Converter.decToBin(operand - ac,16);
 			theCon.setMyIndexRegister(result);
 		} else if (addressingMode.equals("0001")) { // ac addressing
 			int ir = Converter.binToDec(theCon.getMyIndexRegister());
-			result = Converter.decToBin(ir + Converter.binToDec(theCon.getMyMemoryDataAt(operand)),16);
+			result = Converter.decToBin(Converter.binToDec(theCon.getMyMemoryDataAt(operand))-ir,16);
 			theCon.setMyAccumulatorRegister(result);
 		}else{
 			int ir = Converter.binToDec(theCon.getMyIndexRegister());
-			result = Converter.decToBin(ir + Converter.binToDec(theCon.getMyMemoryDataAt(operand)),16);
+			result = Converter.decToBin( Converter.binToDec(theCon.getMyMemoryDataAt(operand))-ir,16);
 			theCon.setMyIndexRegister(result);
 		}
 
