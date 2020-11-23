@@ -1,3 +1,5 @@
+package model.instructionType;
+
 import controller.Controller;
 import model.instructionType.Instruction;
 
