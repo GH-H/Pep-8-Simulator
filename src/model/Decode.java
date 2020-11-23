@@ -146,57 +146,56 @@ public final class Decode {
 				theCon.setMyInstructionWordLabel("CHARO, i");
 				break;
 
-				/* Bugs with parameters
 			case "00011010": // NEGA
-				instruction = new Negate(instructionSpecifier, operandSpecifier, );
+				instruction = new Negate(instructionSpecifier, operandSpecifier, theCon.getMyAccumulatorRegister());
 				theCon.setMyInstructionWordLabel("NEGA");
 				break;
 			case "00011011": // NEGX
-				instruction = new Negate(instructionSpecifier, operandSpecifier);
+				instruction = new Negate(instructionSpecifier, operandSpecifier, theCon.getMyIndexRegister());
 				theCon.setMyInstructionWordLabel("NEGX");
 				break;
 
 			case "00011100": // ASLA
-				instruction = new ArithmeticShiftLeft(instructionSpecifier, operandSpecifier);
+				instruction = new ArithmeticShiftLeft(instructionSpecifier, operandSpecifier, theCon.getMyAccumulatorRegister());
 				theCon.setMyInstructionWordLabel("ASLA");
 				break;
 			case "00011101": // ASLX
-				instruction = new ArithmeticShiftLeft(instructionSpecifier, operandSpecifier);
+				instruction = new ArithmeticShiftLeft(instructionSpecifier, operandSpecifier, theCon.getMyIndexRegister());
 				theCon.setMyInstructionWordLabel("ASLX");
 				break;
 
 			case "00011110": // ASRA
-				instruction = new ArithmeticShiftRight(instructionSpecifier, operandSpecifier);
+				instruction = new ArithmeticShiftRight(instructionSpecifier, operandSpecifier, theCon.getMyAccumulatorRegister());
 				theCon.setMyInstructionWordLabel("ASRA");
 				break;
 			case "00011111": // ASRX
-				instruction = new ArithmeticShiftRight(instructionSpecifier, operandSpecifier);
+				instruction = new ArithmeticShiftRight(instructionSpecifier, operandSpecifier, theCon.getMyIndexRegister());
 				theCon.setMyInstructionWordLabel("ASRX");
 				break;
 
 			case "00100000": // ROLA
-				instruction = new RotateLeft(instructionSpecifier, operandSpecifier);
+				instruction = new RotateLeft(instructionSpecifier, operandSpecifier, theCon.getMyAccumulatorRegister());
 				theCon.setMyInstructionWordLabel("ROLA");
 				break;
 			case "00100001": // ROLX
-				instruction = new RotateLeft(instructionSpecifier, operandSpecifier);
+				instruction = new RotateLeft(instructionSpecifier, operandSpecifier, theCon.getMyIndexRegister());
 				theCon.setMyInstructionWordLabel("ROLX");
 				break;
 
 			case "00100010": // RORA
-				instruction = new RotateRight(instructionSpecifier, operandSpecifier);
+				instruction = new RotateRight(instructionSpecifier, operandSpecifier, theCon.getMyAccumulatorRegister());
 				theCon.setMyInstructionWordLabel("RORA");
 				break;
 			case "00100011": // RORX
-				instruction = new RotateRight(instructionSpecifier, operandSpecifier);
+				instruction = new RotateRight(instructionSpecifier, operandSpecifier, theCon.getMyIndexRegister());
 				theCon.setMyInstructionWordLabel("RORX");
 				break;
-			*/
+
 			case "10110000": //CPA, i
 				instruction = new CPr(instructionSpecifier, operandSpecifier);
 				theCon.setMyInstructionWordLabel("CPA, i");
 				break;
-
+			/**
 			case "11000000": //LDA, i
 				instruction = new Ldr(instructionSpecifier, operandSpecifier);
 				theCon.setMyInstructionWordLabel("LDA, i");
@@ -206,7 +205,7 @@ public final class Decode {
 				instruction = new LdByte(instructionSpecifier, operandSpecifier);
 				theCon.setMyInstructionWordLabel("LDBYTEA, i");
 				break;
-
+			*/
 			case "11100001": //STA, d
 				instruction = new Str(instructionSpecifier, operandSpecifier);
 				theCon.setMyInstructionWordLabel("STA, d");
