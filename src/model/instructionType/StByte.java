@@ -12,7 +12,7 @@ public class StByte extends Instruction{
     public void execute(Controller theCon) {
         theCon.setMyOperand(super.getMyOperandSpecifier());
 
-        String first = (theCon.getMyAccumulatorRegister().substring(0,9));
+        String first = (theCon.getMyAccumulatorRegister().substring(0,8));
         int address =  Converter.binToDec(getMyOperandSpecifier());
 
         theCon.storeInMyMemory(address,first);

@@ -47,4 +47,38 @@ public class Addr_CharOut_LdByte_Ldr_StByte_Str_Stop_Subr_Test {
         a.execute(controller);
         assertEquals(controller.getMyOutput(), "a");
     }
+
+    @Test
+    public void testStr() {
+        Controller controller = new Controller();
+        Str a = new Str("11100001","0000000000000001");//a
+        controller.setMyAccumulatorRegister("0000000000000001");
+        a.execute(controller);
+        assertEquals(controller.getMyMemoryDataAt(1), "00000000");
+        assertEquals(controller.getMyMemoryDataAt(2), "00000001");
+    }
+
+    @Test
+    public void testStByte() {
+        Controller controller = new Controller();
+        StByte a = new StByte("11100001","0000000000000001");//a
+        controller.setMyAccumulatorRegister("0000000000000001");
+        a.execute(controller);
+        assertEquals(controller.getMyMemoryDataAt(1), "00000000");
+        assertEquals(controller.getMyMemoryDataAt(2), "00000000");
+    }
+
+//    @Test
+//    public void testLdr() {
+//        Controller controller = new Controller();
+//        StByte a = new StByte("11100001","0000000000000001");//a
+//        Ldr b = new Ldr("11000001","0000000000000001");//a
+//
+//        controller.setMyAccumulatorRegister("0000000000000001");
+//        a.execute(controller);
+//
+//        b.execute(controller);
+//        assertEquals(controller.getMyAccumulatorRegister(), "0000000000000001");
+//
+//    }
 }
