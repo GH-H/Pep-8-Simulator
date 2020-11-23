@@ -1,6 +1,7 @@
 package view;
 
 import controller.Controller;
+import controller.Assembler;
 import model.Converter;
 
 import javax.swing.*;
@@ -405,8 +406,11 @@ public class Pep8GUIFrame extends JFrame implements ActionListener {
         final String command = theEvent.getActionCommand().intern();
         switch (command) {
             case RUN_SOURCE_COMMAND:
-                //TODO: Call assembleSourceCodeToObjectCode() to translate the Source Code to Object Code,
-                // then write the object code to myObjectTextArea
+                // Assemble source code into object code
+                Assembler assembler = new Assembler(mySourceCodeTextArea.getText());
+                assembler.assembleSourceCodeToObjectCode();
+                myObjectCodeTextArea.setText(assembler.getHexCode());
+
                 //Let action follow the RUN_OBJECT_COMMAND step after. No "break;" needed here
             case RUN_OBJECT_COMMAND:
                 myController.loadObjectCodeIntoMemory(myObjectCodeTextArea.getText());
