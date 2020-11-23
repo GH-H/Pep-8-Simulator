@@ -141,6 +141,82 @@ public final class Decode {
 				theCon.setMyInstructionWordLabel("CHARI, d");
 				break;
 
+			case "01010000": // CHAR0, i
+				instruction = new CharOut(instructionSpecifier, operandSpecifier);
+				theCon.setMyInstructionWordLabel("CHARO, i");
+				break;
+
+				/* Bugs with parameters
+			case "00011010": // NEGA
+				instruction = new Negate(instructionSpecifier, operandSpecifier, );
+				theCon.setMyInstructionWordLabel("NEGA");
+				break;
+			case "00011011": // NEGX
+				instruction = new Negate(instructionSpecifier, operandSpecifier);
+				theCon.setMyInstructionWordLabel("NEGX");
+				break;
+
+			case "00011100": // ASLA
+				instruction = new ArithmeticShiftLeft(instructionSpecifier, operandSpecifier);
+				theCon.setMyInstructionWordLabel("ASLA");
+				break;
+			case "00011101": // ASLX
+				instruction = new ArithmeticShiftLeft(instructionSpecifier, operandSpecifier);
+				theCon.setMyInstructionWordLabel("ASLX");
+				break;
+
+			case "00011110": // ASRA
+				instruction = new ArithmeticShiftRight(instructionSpecifier, operandSpecifier);
+				theCon.setMyInstructionWordLabel("ASRA");
+				break;
+			case "00011111": // ASRX
+				instruction = new ArithmeticShiftRight(instructionSpecifier, operandSpecifier);
+				theCon.setMyInstructionWordLabel("ASRX");
+				break;
+
+			case "00100000": // ROLA
+				instruction = new RotateLeft(instructionSpecifier, operandSpecifier);
+				theCon.setMyInstructionWordLabel("ROLA");
+				break;
+			case "00100001": // ROLX
+				instruction = new RotateLeft(instructionSpecifier, operandSpecifier);
+				theCon.setMyInstructionWordLabel("ROLX");
+				break;
+
+			case "00100010": // RORA
+				instruction = new RotateRight(instructionSpecifier, operandSpecifier);
+				theCon.setMyInstructionWordLabel("RORA");
+				break;
+			case "00100011": // RORX
+				instruction = new RotateRight(instructionSpecifier, operandSpecifier);
+				theCon.setMyInstructionWordLabel("RORX");
+				break;
+			*/
+			case "10110000": //CPA, i
+				instruction = new CPr(instructionSpecifier, operandSpecifier);
+				theCon.setMyInstructionWordLabel("CPA, i");
+				break;
+
+			case "11000000": //LDA, i
+				instruction = new Ldr(instructionSpecifier, operandSpecifier);
+				theCon.setMyInstructionWordLabel("LDA, i");
+				break;
+
+			case "11010000": //LDBYTEA, i
+				instruction = new LdByte(instructionSpecifier, operandSpecifier);
+				theCon.setMyInstructionWordLabel("LDBYTEA, i");
+				break;
+
+			case "11100001": //STA, d
+				instruction = new Str(instructionSpecifier, operandSpecifier);
+				theCon.setMyInstructionWordLabel("STA, d");
+				break;
+
+			case "11110001": //STBYTEA, d
+				instruction = new StByte(instructionSpecifier, operandSpecifier);
+				theCon.setMyInstructionWordLabel("STBYTEr, d");
+				break;
+
 			default:
 				theCon.setMyInstructionWordLabel("");
 				throw new IllegalArgumentException("Instruction " + instructionSpecifier + " not supported.");

@@ -1,3 +1,5 @@
+package model.instructionType;
+
 import controller.Controller;
 import model.instructionType.Instruction;
 
@@ -15,11 +17,11 @@ public class ArithmeticShiftLeft extends Instruction{
 	/** Temporary int holder. */
 	public int holder;
 	
-	public  ArithmeticShiftLeft (String myInstructionSpecifier, String operandSpecifier, String myRd) {
+	public  ArithmeticShiftLeft(String myInstructionSpecifier, String operandSpecifier, String myRd) {
 		super(myInstructionSpecifier,operandSpecifier);
 		this.myRd = myRd;
 	}
-	
+
 	@Override
 	public void execute(Controller theCon) {
 		// TODO Auto-generated method stub
