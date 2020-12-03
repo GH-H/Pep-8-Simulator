@@ -29,7 +29,7 @@ public class Addr extends Instruction {
 			result = Converter.decToBin(ac + operand,16);
 			theCon.setMyIndexRegister(result);
 		} else { //memory,direct
-			int ir = Converter.binToDec(theCon.getMyIndexRegister());
+			int ir = Converter.binToDec(theCon.getMyAccumulatorRegister());
 			result = Converter.decToBin(ir + Converter.binToDec(theCon.getMyMemoryDataAt(operand)),16);
 			theCon.setMyAccumulatorRegister(result);
 		}
